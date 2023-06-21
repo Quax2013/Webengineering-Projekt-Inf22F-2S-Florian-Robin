@@ -18,8 +18,8 @@
     <div id="main-body">
         <header>
             <div id="top-border">
-                <div id="top-border-logo">
-                    <img src="./imgs/no_bg_logo_std.png" alt="Standard_Logo.png" id="top-border-logo-img">
+                <div id="top-border-logo" onclick="mainLogoFunc()">
+                    <img src="./imgs/no_bg_logo_std.png" alt="Standard_Logo.png" id="top-border-logo-img" onclick="mainLogoFunc()">
                     Nobel Archiv
                 </div>
             </div>
@@ -27,11 +27,9 @@
         <div id="contents">
             <div id="search-field">
                 <input type="text" id="search-bar" placeholder="Einstein">
-                <button type="button" id="search-button" onclick="search()">Search</button>
+                <input type="button" value="Search" id="search-button" onclick="search()">
             </div>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit sint minima cupiditate recusandae provident
-                atque itaque, soluta sapiente at assumenda doloremque voluptatibus reiciendis sequi suscipit accusamus
-                natus quos fuga nemo.</p>
+            <div id="placeholder"></div>
         </div>
     </div>
 
