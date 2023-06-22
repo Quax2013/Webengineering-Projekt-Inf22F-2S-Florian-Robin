@@ -1,5 +1,6 @@
 :root {
     --std-bg-col: #fff2e3;
+    --result-bg-col: #ffffff;
     --std-accnt-col: #dd7f32;
     --std-font-col: #000000;
     --std-font-sty: 'Raleway', sans-serif;
@@ -58,6 +59,7 @@ header{
     border: 0;
     background-color: var(--std-accnt-col);
     border-radius: 20px;
+    margin-left: 10px;
 }
 
 #search-bar{
@@ -66,4 +68,26 @@ header{
     border-radius: 20px;
     font-size: 20px;
     padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.search-result-person{
+    display: grid;
+    grid-row: auto;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: var(--result-bg-col);
+}
+
+.person-name{
+    font-weight: bold;
+    font-size: 120%;
+    margin-bottom: 100h;
+}
+
+.person-info{
+    font-style: italic;
 }
