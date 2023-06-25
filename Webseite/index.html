@@ -25,7 +25,52 @@
             </div>
         </header>
         <div id="contents">
+            <div id="filter">
+                <button id="filter-button" onclick="myFunction()" class="filter">filter &#x2193;</button>
+                <div id="content-dropdown" class="dropdown-content">
+                    <div>
+                        <input type="checkbox" id="checkbox1" class="testcheckbox" name="name" value="Fach" checked>
+                        <label for="checkbox1" class="testcheckbox"> physics</label>
+                        <input type="checkbox" id="checkbox2" class="testcheckbox" name="name" value="none" checked>
+                        <label for="checkbox2" class="testcheckbox"> chemistry</label>
+                        <input type="checkbox" id="checkbox3" class="testcheckbox" name="name" value="Fach" checked>
+                        <label for="checkbox3" class="testcheckbox"> physiology or medicine</label>
+                        <input type="checkbox" id="checkbox4" class="testcheckbox" name="name" value="Fach" checked>
+                        <label for="checkbox4" class="testcheckbox"> literature</label>
+                        <input type="checkbox" id="checkbox5" class="testcheckbox" name="name" value="Fach" checked>
+                        <label for="checkbox5" class="testcheckbox"> peace</label>
+                        <input type="checkbox" id="checkbox6" class="testcheckbox" name="name" value="Fach" checked>
+                        <label for="checkbox6" class="testcheckbox"> economic sciences</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="checkbox1" class="testcheckbox" name="name" value="Fach" checked>
+                        <label for="checkbox1" class="testcheckbox"> person</label>
+                        <input type="checkbox" id="checkbox2" class="testcheckbox" name="name" value="none" checked>
+                        <label for="checkbox2" class="testcheckbox"> nobel prize</label>
+                        
+                    </div>
+                    <div class="range_container">
+                        <div class="sliders_control">
+                            <input id="fromSlider" type="range" value="1901" min="1901" max="2023"/>
+                            <input id="toSlider" type="range" value="2023" min="1901" max="2023"/>
+                        </div>
+                        <div class="form_control">
+                            <div class="form_control_container">
+                                <div class="form_control_container__time">Min</div>
+                                <input class="form_control_container__time__input" type="number" id="fromInput" value="1901" min="1901" max="2023"/>
+                            </div>
+                            <div class="form_control_container">
+                                <div class="form_control_container__time">Max</div>
+                                <input class="form_control_container__time__input" type="number" id="toInput" value="2023" min="1901" max="2023"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>   
             <div id="search-field">
+                 
+                
                 <input type="text" id="search-bar" placeholder="eg. Einstein, Obama">
                 <input type="button" value="Search" id="search-button" onclick="search()">
             </div>
