@@ -6,19 +6,30 @@
     --std-font-sty: 'Raleway', sans-serif;
 }
 
+html {
+    scrollbar-width: none;
+}
 
 body {
     font-family: var(--std-font-sty);
     background-color: var(--std-bg-col);
     color: var(--std-font-col);
     margin: 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-header{
+body::-webkit-scrollbar {
+    display: none;
+}
+
+header {
     width: 100%;
+    position: sticky;
+    top: 0;
 }
 
-#top-border{
+#top-border {
     width: 100%;
     background-color: var(--std-accnt-col);
 }
@@ -35,25 +46,35 @@ header{
     height: 40px;
 }
 
-#main-body{
+#background-div {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    opacity: 0.25;
+    background-image: url("./imgs/wallpaper1-pages.jpg");
+    background-size: cover;
+    z-index: -999;
+}
+
+#main-body {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#contents{
+#contents {
     margin-top: 40vh;
     width: 70%;
 }
 
-#search-field{
+#search-field {
     width: 100%;
     display: flex;
     fill: 1;
 }
 
-#search-button{
+#search-button {
     float: right;
     font-size: 20px;
     border: 0;
@@ -96,24 +117,43 @@ header{
     height: auto;
 }
 
-.search-result-person{
-    display: grid;
-    grid-row: auto;
+#placeholder {
     width: 100%;
+}
+
+.search-result-person {
+    width: 100% - 20px;
     padding: 10px;
     margin-top: 10px;
     border-radius: 20px;
     background-color: var(--result-bg-col);
 }
 
-.person-name{
+.person-name {
     font-weight: bold;
     font-size: 120%;
     margin-bottom: 100h;
 }
+.person-name a{
+    color: var(--std-font-col);
+    text-decoration:none;
+}
 
-.person-info{
+.person-name a:hover {
+    color: var(--std-accnt-col);
+}
+
+.person-info {
     font-style: italic;
+}
+
+.person-prize a{
+    color: var(--std-font-col);
+    text-decoration:none;
+}
+
+.person-prize a:hover{
+    color: var(--std-accnt-col);
 }
 
 

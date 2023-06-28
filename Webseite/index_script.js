@@ -28,20 +28,34 @@ function search() {
                 if (i.birth) {
                     let resultDiv = document.createElement("div");
                     let nameDiv = document.createElement("div");
+                    let nameLink = document.createElement("a");
                     let infoDiv = document.createElement("div");
                     let prizesDiv = document.createElement("div");
+                    let prizeLink = document.createElement("a");
 
                     resultDiv.className = "search-result-person";
 
+                    nameLink.href = i.links[1].href;
+                    nameLink.innerHTML = i.fullName.en;
+
                     nameDiv.className = "person-name";
-                    nameDiv.innerHTML = i.fullName.en;
+                    nameDiv.appendChild(nameLink);
 
                     infoDiv.className = "person-info";
                     infoDiv.innerHTML = `* ${i.birth.date} - ${i.birth.place ? i.birth.place.locationString.en : ""}<br>+ ${i.death ? `${i.death.date} - ${i.death.place.locationString.en}` : "No Death"}`;
 
-                    prizesDiv.innerHTML = `- ${i.nobelPrizes[0].category.en}`;
+                    prizesDiv.className = "person-prize";
+                    prizeLink.innerHTML = `- ${i.nobelPrizes[0].category.en} ${i.nobelPrizes[0].awardYear}`;
+                    prizeLink.href = i.nobelPrizes[0].links[2].href;
+                    prizeLink.target = "_blank";
+                    prizesDiv.appendChild(prizeLink);
+
                     for (let x = 1; x < i.nobelPrizes.length; x++) {
-                        prizesDiv.innerHTML += `<br>- ${i.nobelPrizes[x].category.en}`;
+                        let newPrizeLink = document.createElement("a");
+                        newPrizeLink.innerHTML = `<br>- ${i.nobelPrizes[x].category.en} ${i.nobelPrizes[x].awardYear}`;
+                        newPrizeLink.href = i.nobelPrizes[x].links[2].href;
+                        newPrizeLink.target = "_blank";
+                        prizesDiv.appendChild(newPrizeLink);
                     }
 
                     resultDiv.appendChild(nameDiv);
