@@ -2,6 +2,7 @@
     --std-bg-col: #fff2e3;
     --result-bg-col: #ffffff;
     --std-accnt-col: #dd7f32;
+    --std-accnt-hover-col: #975a27;
     --std-font-col: #000000;
     --std-font-sty: 'Raleway', sans-serif;
 }
@@ -76,9 +77,7 @@ header {
 
 #search-button {
     float: right;
-    font-size: 20px;
     border: 0;
-    background-color: var(--std-accnt-col);
     border-radius: 20px;
     margin-left: 10px;
 }
@@ -91,14 +90,9 @@ header {
     width: 100%;
     border: 0;
     border-radius: 20px;
-    background-color: var(--std-accnt-col);
-    font-size: 20px;
-    padding: 5px;
     padding-left: 10px;
     padding-right: 10px;
     white-space: nowrap;
-    
-
 }
 
 #search-bar{
@@ -119,6 +113,19 @@ header {
 
 #placeholder {
     width: 100%;
+}
+
+#prev-page-button{
+    margin-top: 10px;
+}
+
+#next-page-button{
+    margin-top: 10px;
+    float: right;
+}
+
+.pageButton{
+    visibility: hidden;
 }
 
 .search-result-person {
@@ -159,7 +166,6 @@ header {
 
 
 .filter {
-    background-color: #04AA6D;
     color: white;
     padding: 16px;
     font-size: 16px;
@@ -170,13 +176,19 @@ header {
 
 
 .searchButton{
-    background-color: #04AA6D;
     color: white;
-    font-size: 16px;
+    font-size: 20px;
     border: none;
+    border-radius: 20px;
     cursor: pointer;
+    padding: 5px;
     padding-left: 3%;
-    padding-right: 3%
+    padding-right: 3%;
+    background-color: var(--std-accnt-col);
+}
+
+.searchButton:hover{
+    background-color: var(--std-accnt-hover-col);
 }
 
 

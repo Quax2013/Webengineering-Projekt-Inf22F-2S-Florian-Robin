@@ -1,13 +1,15 @@
 let input;
+let globalOffset = 0;
+let foundAmount = 0;
 
 function mainLogoFunc() {
     window.location.replace("./index.html");
 }
 
 ///////////////////////////////////////////////
-function search() {
-
-    fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}`, {
+function search(offset) {
+    globalOffset = offset
+    fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}`, {
         method: "GET"
     })
         .then(response => {
@@ -15,59 +17,99 @@ function search() {
 
         })
         .then(response => {
+            foundAmount = response.laureates.length;
+
             console.log(response);
             console.log(response.laureates);
+
+            let buttons = document.querySelectorAll(".pageButton");
             if (response.laureates.length == 0) {
                 document.querySelector("#placeholder").innerHTML = "Keine Treffer";
+                for (let i of buttons) {
+                    i.style.visibility = "hidden";
+                }
                 return;
+            } else {
+                if (response.laureates.length == 25 && globalOffset > 0) {
+                    for (let i of buttons) {
+                        i.style.visibility = "visible";
+                    }
+                } else if (response.laureates.length == 25 && globalOffset == 0){
+                    document.querySelector("#prev-page-button").style.visibility = "hidden";
+                    document.querySelector("#next-page-button").style.visibility = "visible";
+                } else if (response.laureates.length < 25 && globalOffset == 0){
+                    for (let i of buttons) {
+                        i.style.visibility = "hidden";
+                    }
+                } else {
+                    document.querySelector("#prev-page-button").style.visibility = "visible";
+                    document.querySelector("#next-page-button").style.visibility = "hidden";
+                }
             }
             document.querySelector("#contents").style.transition = "all 0.25s";
             document.querySelector("#contents").style.marginTop = "10vh";
             document.querySelector("#placeholder").innerHTML = "";
             for (let i of response.laureates) {
                 if (i.birth) {
-                    let resultDiv = document.createElement("div");
-                    let nameDiv = document.createElement("div");
-                    let nameLink = document.createElement("a");
-                    let infoDiv = document.createElement("div");
-                    let prizesDiv = document.createElement("div");
-                    let prizeLink = document.createElement("a");
-
-                    resultDiv.className = "search-result-person";
-
-                    nameLink.href = i.links[1].href;
-                    nameLink.innerHTML = i.fullName.en;
-
-                    nameDiv.className = "person-name";
-                    nameDiv.appendChild(nameLink);
-
-                    infoDiv.className = "person-info";
-                    infoDiv.innerHTML = `* ${i.birth.date} - ${i.birth.place ? i.birth.place.locationString.en : ""}<br>+ ${i.death ? `${i.death.date} - ${i.death.place.locationString.en}` : "No Death"}`;
-
-                    prizesDiv.className = "person-prize";
-                    prizeLink.innerHTML = `- ${i.nobelPrizes[0].category.en} ${i.nobelPrizes[0].awardYear}`;
-                    prizeLink.href = i.nobelPrizes[0].links[2].href;
-                    prizeLink.target = "_blank";
-                    prizesDiv.appendChild(prizeLink);
-
-                    for (let x = 1; x < i.nobelPrizes.length; x++) {
-                        let newPrizeLink = document.createElement("a");
-                        newPrizeLink.innerHTML = `<br>- ${i.nobelPrizes[x].category.en} ${i.nobelPrizes[x].awardYear}`;
-                        newPrizeLink.href = i.nobelPrizes[x].links[2].href;
-                        newPrizeLink.target = "_blank";
-                        prizesDiv.appendChild(newPrizeLink);
-                    }
-
-                    resultDiv.appendChild(nameDiv);
-                    resultDiv.appendChild(infoDiv);
-                    resultDiv.appendChild(prizesDiv);
-
-                    document.querySelector("#placeholder").appendChild(resultDiv);
+                    putPerson(i);
                 }
             }
-
         })
 }
+
+function putPerson(i) {
+    let resultDiv = document.createElement("div");
+    let nameDiv = document.createElement("div");
+    let nameLink = document.createElement("a");
+    let infoDiv = document.createElement("div");
+    let prizesDiv = document.createElement("div");
+
+    resultDiv.className = "search-result-person";
+
+    nameLink.href = i.links[1].href;
+    nameLink.innerHTML = i.fullName.en;
+
+    nameDiv.className = "person-name";
+    nameDiv.appendChild(nameLink);
+
+    infoDiv.className = "person-info";
+    infoDiv.innerHTML = `* ${i.birth.date} - ${i.birth.place ? i.birth.place.locationString.en : ""}<br>+ ${i.death ? `${i.death.date} - ${i.death.place.locationString.en}` : "No Death"}`;
+
+    prizesDiv.className = "person-prize";
+
+    for (let x of i.nobelPrizes) {
+        let newPrizeLink = document.createElement("a");
+        newPrizeLink.innerHTML = `<br>- ${x.category.en} ${x.awardYear}`;
+        newPrizeLink.href = x.links[2].href;
+        newPrizeLink.target = "_blank";
+        prizesDiv.appendChild(newPrizeLink);
+    }
+
+    resultDiv.appendChild(nameDiv);
+    resultDiv.appendChild(infoDiv);
+    resultDiv.appendChild(prizesDiv);
+
+    document.querySelector("#placeholder").appendChild(resultDiv);
+}
+
+function prevPage() {
+    search(globalOffset - 25);
+}
+
+function nextPage() {
+    search(globalOffset + 25);
+}
+
+function getFilter() {
+    let checkboxes = document.querySelectorAll("input.testcheckbox");
+    let values = [];
+    for (let i of checkboxes) {
+        values.push(i.checked);
+    }
+    console.log(checkboxes);
+    console.log(values);
+}
+
 ///////////////////////////////////////////////
 
 
@@ -86,7 +128,9 @@ window.onload = () => {
     input = document.querySelector("#search-bar");
 }
 
-
+function debug() {
+    getFilter();
+}
 
 
 
