@@ -8,6 +8,8 @@ function mainLogoFunc() {
 
 ///////////////////////////////////////////////
 function search(offset) {
+    let filters = getFilter();
+    console.log(filters);
     globalOffset = offset
     fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}`, {
         method: "GET"
@@ -34,10 +36,10 @@ function search(offset) {
                     for (let i of buttons) {
                         i.style.visibility = "visible";
                     }
-                } else if (response.laureates.length == 25 && globalOffset == 0){
+                } else if (response.laureates.length == 25 && globalOffset == 0) {
                     document.querySelector("#prev-page-button").style.visibility = "hidden";
                     document.querySelector("#next-page-button").style.visibility = "visible";
-                } else if (response.laureates.length < 25 && globalOffset == 0){
+                } else if (response.laureates.length < 25 && globalOffset == 0) {
                     for (let i of buttons) {
                         i.style.visibility = "hidden";
                     }
@@ -101,13 +103,23 @@ function nextPage() {
 }
 
 function getFilter() {
-    let checkboxes = document.querySelectorAll("input.testcheckbox");
-    let values = [];
-    for (let i of checkboxes) {
-        values.push(i.checked);
+    let categories = document.querySelectorAll(".divContentDropdown");
+    let labels = [];
+    let checkboxes = [[], [], []];
+    let values = [[], [], []];
+
+    for (let k = 0; k < 2; k++) {
+        labels = categories[k].querySelectorAll("label.checkbox");
+        for (let i of labels) {
+            let cell = i.querySelector("input")
+            checkboxes[k].push(cell);
+            if (cell.checked) values[k].push([i.innerText.split("\n").shift(),cell.checked]);
+        }
     }
-    console.log(checkboxes);
-    console.log(values);
+    // console.log(labels);         //DEBUG
+    // console.log(checkboxes);
+    // console.log(values);
+    return values;
 }
 
 ///////////////////////////////////////////////
