@@ -20,6 +20,7 @@ function search(offset) {
 
         })
         .then(response => {
+            document.querySelector("#placeholder").innerHTML = "";
             foundAmount = response.laureates.length;
 
             console.log(response);
@@ -54,7 +55,6 @@ function search(offset) {
             }
             document.querySelector("#contents").style.transition = "all 0.25s";
             document.querySelector("#contents").style.marginTop = "10vh";
-            document.querySelector("#placeholder").innerHTML = "";
             let elementCount = 0;
             for (let i of response.laureates) {
                 if (elementCount < 25) {
