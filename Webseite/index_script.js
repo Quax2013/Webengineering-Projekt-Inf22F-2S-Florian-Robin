@@ -1,6 +1,7 @@
 let input;
 let globalOffset = 0;
 let foundAmount = 0;
+const LIMIT = 26;
 
 function mainLogoFunc() {
     window.location.replace("./index.html");
@@ -11,7 +12,7 @@ function search(offset) {
     let filters = getFilter();
     console.log(filters);
     globalOffset = offset
-    fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}`, {
+    fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT}`, {
         method: "GET"
     })
         .then(response => {
@@ -26,20 +27,23 @@ function search(offset) {
 
             let buttons = document.querySelectorAll(".pageButton");
             if (response.laureates.length == 0) {
-                document.querySelector("#placeholder").innerHTML = "Keine Treffer";
+                let errorMsg = document.createElement("div");
+                errorMsg.classList.add("error-field");
+                errorMsg.innerHTML = "Keine Treffer"
+                document.querySelector("#placeholder").appendChild(errorMsg);
                 for (let i of buttons) {
                     i.style.visibility = "hidden";
                 }
                 return;
             } else {
-                if (response.laureates.length == 25 && globalOffset > 0) {
+                if (response.laureates.length == LIMIT && globalOffset > 0) {
                     for (let i of buttons) {
                         i.style.visibility = "visible";
                     }
-                } else if (response.laureates.length == 25 && globalOffset == 0) {
+                } else if (response.laureates.length == LIMIT && globalOffset == 0) {
                     document.querySelector("#prev-page-button").style.visibility = "hidden";
                     document.querySelector("#next-page-button").style.visibility = "visible";
-                } else if (response.laureates.length < 25 && globalOffset == 0) {
+                } else if (response.laureates.length < LIMIT && globalOffset == 0) {
                     for (let i of buttons) {
                         i.style.visibility = "hidden";
                     }
@@ -51,15 +55,61 @@ function search(offset) {
             document.querySelector("#contents").style.transition = "all 0.25s";
             document.querySelector("#contents").style.marginTop = "10vh";
             document.querySelector("#placeholder").innerHTML = "";
+            let elementCount = 0;
             for (let i of response.laureates) {
-                if (i.birth) {
-                    putPerson(i);
+                if (elementCount < 25) {
+                    if (i.birth) {
+                        putPerson(i);
+                    } else {
+                        // putCompany(i);
+                    }
                 }
+                elementCount++;
             }
         })
 }
 
 function putPerson(i) {
+    let resultDiv = document.createElement("div");
+    let nameDiv = document.createElement("div");
+    let nameLink = document.createElement("a");
+    let wikiLink = document.createElement("a");
+    let infoDiv = document.createElement("div");
+    let prizesDiv = document.createElement("div");
+
+    resultDiv.className = "search-result-person";
+
+    nameLink.href = i.links[1].href;
+    nameLink.innerHTML = i.fullName.en;
+
+    wikiLink.href = i.wikipedia.english;
+    wikiLink.innerHTML = " (Wikipedia)"
+
+    nameDiv.className = "person-name";
+    nameDiv.appendChild(nameLink);
+    nameDiv.appendChild(wikiLink);
+
+    infoDiv.className = "person-info";
+    infoDiv.innerHTML = `* ${i.birth.date} - ${i.birth.place ? i.birth.place.locationString.en : ""}<br>+ ${i.death ? `${i.death.date} - ${i.death.place.locationString.en}` : "No Death"}`;
+
+    prizesDiv.className = "person-prize";
+
+    for (let x of i.nobelPrizes) {
+        let newPrizeLink = document.createElement("a");
+        newPrizeLink.innerHTML = `<br>- ${x.category.en} ${x.awardYear}`;
+        newPrizeLink.href = x.links[2].href;
+        newPrizeLink.target = "_blank";
+        prizesDiv.appendChild(newPrizeLink);
+    }
+
+    resultDiv.appendChild(nameDiv);
+    resultDiv.appendChild(infoDiv);
+    resultDiv.appendChild(prizesDiv);
+
+    document.querySelector("#placeholder").appendChild(resultDiv);
+}
+
+function putCompany(i) {
     let resultDiv = document.createElement("div");
     let nameDiv = document.createElement("div");
     let nameLink = document.createElement("a");
@@ -95,11 +145,11 @@ function putPerson(i) {
 }
 
 function prevPage() {
-    search(globalOffset - 25);
+    search(globalOffset - LIMIT - 1);
 }
 
 function nextPage() {
-    search(globalOffset + 25);
+    search(globalOffset + LIMIT - 1);
 }
 
 function getFilter() {
@@ -113,7 +163,7 @@ function getFilter() {
         for (let i of labels) {
             let cell = i.querySelector("input")
             checkboxes[k].push(cell);
-            if (cell.checked) values[k].push([i.innerText.split("\n").shift(),cell.checked]);
+            if (cell.checked) values[k].push([i.innerText.split("\n").shift(), cell.checked]);
         }
     }
     // console.log(labels);         //DEBUG
@@ -134,10 +184,15 @@ function getFilter() {
 
 
 
-
-
 window.onload = () => {
     input = document.querySelector("#search-bar");
+
+    document.querySelector("#search-bar").addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            search(0);
+        }
+    });
 }
 
 function debug() {
