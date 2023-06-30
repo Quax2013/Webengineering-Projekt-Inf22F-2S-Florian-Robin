@@ -5,6 +5,9 @@
     --std-accnt-hover-col: #975a27;
     --std-font-col: #000000;
     --std-font-sty: 'Raleway', sans-serif;
+    --err-font-col: #ffffff;
+    --err-bg-col: #e73d3d;
+    --err-accnt-col: #8f2525;
 }
 
 html {
@@ -28,6 +31,19 @@ header {
     width: 100%;
     position: sticky;
     top: 0;
+}
+
+.error-field{
+    margin-top: 10px;
+    background-color: var(--err-bg-col);
+    color: var(--err-font-col);
+    border-style: solid;
+    border-color: var(--err-accnt-col);
+    border-width: 2px;
+    border-radius: 20px;
+    padding: 5px;
+    font-size: 20px;
+    text-align: center;
 }
 
 #top-border {
