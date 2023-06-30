@@ -37,7 +37,8 @@
                 </div>
 
                 <input type="text" id="search-bar" placeholder="eg. Einstein, Obama">
-                <button id="search-button" onclick="search()" class="searchButton">Search</button>
+                <button id="search-button" onclick="search(0)" class="searchButton">Search</button>
+                <button id="debug-button" onclick="debug()">#DEBUG#</button>
             </div>
             <div id="content-dropdown" class="dropdown-content">
                 <div class="divContenDropdown">
@@ -89,6 +90,8 @@
 
             </div>
             <div id="placeholder"></div>
+            <button id="prev-page-button" class="searchButton pageButton" onclick="prevPage()">Previous Page</button>
+            <button id="next-page-button" class="searchButton pageButton" onclick="nextPage()">Next Page</button>
         </div>
     </div>
     <script src="https://cdn.korzh.com/metroui/v4/js/metro.min.js"></script>
