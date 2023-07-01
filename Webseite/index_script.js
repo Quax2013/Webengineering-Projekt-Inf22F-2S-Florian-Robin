@@ -1,7 +1,23 @@
 let input;
 let globalOffset = 0;
+let categoryOffset = {
+    "physics": 0,
+    "chemistry": 0,
+    "physiology or medicine": 0,
+    "literature": 0,
+    "peace": 0,
+    "economic sciences": 0
+}
 let foundAmount = 0;
-const LIMIT = 26;
+const LIMIT = 31;
+const categoryAlias = {
+    "physics": "phy",
+    "chemistry": "che",
+    "physiology or medicine": "med",
+    "literature": "lit",
+    "peace": "pea",
+    "economic sciences": "eco"
+}
 
 function mainLogoFunc() {
     window.location.replace("./index.html");
@@ -12,61 +28,108 @@ function search(offset) {
     let filters = getFilter();
     console.log(filters);
     globalOffset = offset
-    fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT}`, {
-        method: "GET"
-    })
-        .then(response => {
-            return response.json();
-
+    document.querySelector("#placeholder").innerHTML = ""
+    if ((filters[0].length == 0 || filters[0].length == 6) && (filters[1].length == 0 || filters[1].includes("person"))) {
+        fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT}`, {
+            method: "GET"
         })
-        .then(response => {
-            document.querySelector("#placeholder").innerHTML = "";
-            foundAmount = response.laureates.length;
+            .then(response => {
+                return response.json();
 
-            console.log(response);
-            console.log(response.laureates);
+            })
+            .then(response => {
+                foundAmount = response.laureates.length;
 
-            let buttons = document.querySelectorAll(".pageButton");
-            if (response.laureates.length == 0) {
-                let errorMsg = document.createElement("div");
-                errorMsg.classList.add("error-field");
-                errorMsg.innerHTML = "Keine Treffer"
-                document.querySelector("#placeholder").appendChild(errorMsg);
-                for (let i of buttons) {
-                    i.style.visibility = "hidden";
+                console.log(response);
+                console.log(response.laureates);
+
+                if (response.laureates.length == 0) {
+                    throwSearchError();
+                    return;
                 }
-                return;
-            } else {
-                if (response.laureates.length == LIMIT && globalOffset > 0) {
-                    for (let i of buttons) {
-                        i.style.visibility = "visible";
-                    }
-                } else if (response.laureates.length == LIMIT && globalOffset == 0) {
-                    document.querySelector("#prev-page-button").style.visibility = "hidden";
-                    document.querySelector("#next-page-button").style.visibility = "visible";
-                } else if (response.laureates.length < LIMIT && globalOffset == 0) {
-                    for (let i of buttons) {
-                        i.style.visibility = "hidden";
-                    }
-                } else {
-                    document.querySelector("#prev-page-button").style.visibility = "visible";
-                    document.querySelector("#next-page-button").style.visibility = "hidden";
-                }
-            }
-            document.querySelector("#contents").style.transition = "all 0.25s";
-            document.querySelector("#contents").style.marginTop = "10vh";
-            let elementCount = 0;
-            for (let i of response.laureates) {
-                if (elementCount < 25) {
-                    if (i.birth) {
-                        putPerson(i);
+                handleResponse(response);
+            })
+    } else {
+        console.log("FILTER_DEBUG")
+        let emptyResponse = 0;
+        document.querySelector("#placeholder").innerHTML = ""
+        for (let item of filters[0]) {
+            console.log("DEBUG_CATEGORY: " + item)
+            console.log("DEBUG_CATEGORY: " + categoryAlias[item])
+            fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${categoryOffset[item] != 0 ? `&offset=${categoryOffset[item]}` : ""}&limit=${LIMIT / 6}&nobelPrizeCategory=${categoryAlias[item]}`, {
+                method: "GET"
+            })
+                .then(response => {
+                    return response.json();
+
+                })
+                .then(response => {
+                    foundAmount = response.laureates.length;
+
+                    console.log(response);
+                    console.log(response.laureates);
+
+                    let buttons = document.querySelectorAll(".pageButton");
+                    if (response.laureates.length == 0) {
+                        emptyResponse++;
                     } else {
-                        // putCompany(i);
+                        handleResponse(response);
                     }
-                }
-                elementCount++;
+                })
+            if (emptyResponse == filters[0].length) {
+                throwSearchError();
             }
-        })
+        }
+    }
+}
+
+function throwSearchError() {
+    let buttons = document.querySelectorAll(".pageButton");
+    let errorMsg = document.createElement("div");
+    errorMsg.classList.add("error-field");
+    errorMsg.innerHTML = "Keine Treffer"
+    document.querySelector("#placeholder").appendChild(errorMsg);
+    for (let i of buttons) {
+        i.style.visibility = "hidden";
+    }
+}
+
+function handleResponse(response) {
+    adjustPageButtons(response);
+
+    document.querySelector("#contents").style.transition = "all 0.25s";
+    document.querySelector("#contents").style.marginTop = "10vh";
+    let elementCount = 0;
+    for (let i of response.laureates) {
+        if (elementCount < 25) {
+            if (i.birth) {
+                putPerson(i);
+            } else {
+                // putCompany(i);
+            }
+        }
+        elementCount++;
+    }
+}
+
+function adjustPageButtons(response) {
+    let buttons = document.querySelectorAll(".pageButton");
+
+    if (response.laureates.length == LIMIT && globalOffset > 0) {
+        for (let i of buttons) {
+            i.style.visibility = "visible";
+        }
+    } else if (response.laureates.length == LIMIT && globalOffset == 0) {
+        document.querySelector("#prev-page-button").style.visibility = "hidden";
+        document.querySelector("#next-page-button").style.visibility = "visible";
+    } else if (response.laureates.length < LIMIT && globalOffset == 0) {
+        for (let i of buttons) {
+            i.style.visibility = "hidden";
+        }
+    } else {
+        document.querySelector("#prev-page-button").style.visibility = "visible";
+        document.querySelector("#next-page-button").style.visibility = "hidden";
+    }
 }
 
 function putPerson(i) {
@@ -145,11 +208,11 @@ function putCompany(i) {
 }
 
 function prevPage() {
-    search(globalOffset - LIMIT - 1);
+    search(globalOffset - (LIMIT - 1));
 }
 
 function nextPage() {
-    search(globalOffset + LIMIT - 1);
+    search(globalOffset + (LIMIT - 1));
 }
 
 function getFilter() {
@@ -163,7 +226,7 @@ function getFilter() {
         for (let i of labels) {
             let cell = i.querySelector("input")
             checkboxes[k].push(cell);
-            if (cell.checked) values[k].push([i.innerText.split("\n").shift(), cell.checked]);
+            if (cell.checked) values[k].push(i.innerText.split("\n").shift());
         }
     }
     // console.log(labels);         //DEBUG
