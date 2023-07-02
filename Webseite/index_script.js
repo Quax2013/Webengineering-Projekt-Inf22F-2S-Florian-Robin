@@ -1,15 +1,7 @@
 let input;
 let globalOffset = 0;
-let categoryOffset = {
-    "physics": 0,
-    "chemistry": 0,
-    "physiology or medicine": 0,
-    "literature": 0,
-    "peace": 0,
-    "economic sciences": 0
-}
-let foundAmount = 0;
-const LIMIT = 31;
+let categoryOffset = 0;
+const LIMIT = 30;
 const categoryAlias = {
     "physics": "phy",
     "chemistry": "che",
@@ -18,6 +10,7 @@ const categoryAlias = {
     "peace": "pea",
     "economic sciences": "eco"
 }
+let filters;
 
 function mainLogoFunc() {
     window.location.replace("./index.html");
@@ -25,38 +18,17 @@ function mainLogoFunc() {
 
 ///////////////////////////////////////////////
 function search(offset) {
-    let filters = getFilter();
+    let foundAmount = 0;
+    for (let i of document.querySelectorAll(".pageButton")) {
+        i.style.visibility = "hidden";
+    }
+    if (offset == 0) filters = getFilter();
     console.log(filters);
     globalOffset = offset
-    document.querySelector("#placeholder").innerHTML = ""
-    if ((filters[0].length == 0 || filters[0].length == 6) && (filters[1].length == 0 || filters[1].includes("person"))) {
-        fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT}`, {
-            method: "GET"
-        })
-            .then(response => {
-                return response.json();
-
-            })
-            .then(response => {
-                foundAmount = response.laureates.length;
-
-                console.log(response);
-                console.log(response.laureates);
-
-                if (response.laureates.length == 0) {
-                    throwSearchError();
-                    return;
-                }
-                handleResponse(response);
-            })
-    } else {
-        console.log("FILTER_DEBUG")
-        let emptyResponse = 0;
-        document.querySelector("#placeholder").innerHTML = ""
-        for (let item of filters[0]) {
-            console.log("DEBUG_CATEGORY: " + item)
-            console.log("DEBUG_CATEGORY: " + categoryAlias[item])
-            fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${categoryOffset[item] != 0 ? `&offset=${categoryOffset[item]}` : ""}&limit=${LIMIT / 6}&nobelPrizeCategory=${categoryAlias[item]}`, {
+    document.querySelector("#placeholder").innerHTML = "";
+    if (filters[1].length == 0 || filters[1].includes("person")) {
+        if ((filters[0].length == 0 || filters[0].length == 6) && (filters[1].length == 0 || filters[1].includes("person"))) {
+            fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT + 1}`, {
                 method: "GET"
             })
                 .then(response => {
@@ -69,15 +41,48 @@ function search(offset) {
                     console.log(response);
                     console.log(response.laureates);
 
-                    let buttons = document.querySelectorAll(".pageButton");
-                    if (response.laureates.length == 0) {
-                        emptyResponse++;
-                    } else {
-                        handleResponse(response);
+                    if (foundAmount == 0) {
+                        throwSearchError();
+                        return;
                     }
+                    handleResponse(response, LIMIT);
+                    console.log("AMOUNT_DEBUG: " + foundAmount);
+                    adjustPageButtons(foundAmount);
                 })
-            if (emptyResponse == filters[0].length) {
-                throwSearchError();
+        } else {
+            console.log("FILTER_DEBUG")
+            let emptyResponses = 0;
+            if (offset == 0) {
+                categoryOffset = 0;
+            }
+            for (let item of filters[0]) {
+                fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${categoryOffset != 0 ? `&offset=${categoryOffset}` : ""}&limit=${Math.ceil((LIMIT + 1) / filters[0].length)}&nobelPrizeCategory=${categoryAlias[item]}`, {
+                    method: "GET"
+                })
+                    .then(response => {
+                        return response.json();
+
+                    })
+                    .then(response => {
+                        console.log("DEBUG_CATEGORY: " + item)
+                        console.log("DEBUG_CATEGORY: " + categoryAlias[item])
+                        foundAmount += response.laureates.length;
+
+                        console.log(response);
+                        console.log(response.laureates);
+
+                        if (response.laureates.length == 0) {
+                            emptyResponses++;
+                        } else {
+                            handleResponse(response, Math.ceil(LIMIT / filters[0].length));
+                        }
+                        console.log("AMOUNT_DEBUG: " + foundAmount);
+                        adjustPageButtons(foundAmount);
+
+                        if (emptyResponses == filters[0].length) {
+                            throwSearchError();
+                        }
+                    })
             }
         }
     }
@@ -87,42 +92,40 @@ function throwSearchError() {
     let buttons = document.querySelectorAll(".pageButton");
     let errorMsg = document.createElement("div");
     errorMsg.classList.add("error-field");
-    errorMsg.innerHTML = "Keine Treffer"
+    errorMsg.innerHTML = "No results"
     document.querySelector("#placeholder").appendChild(errorMsg);
     for (let i of buttons) {
         i.style.visibility = "hidden";
     }
 }
 
-function handleResponse(response) {
-    adjustPageButtons(response);
-
+function handleResponse(response, limit) {
     document.querySelector("#contents").style.transition = "all 0.25s";
     document.querySelector("#contents").style.marginTop = "10vh";
     let elementCount = 0;
     for (let i of response.laureates) {
-        if (elementCount < 25) {
+        if (elementCount < limit) {
             if (i.birth) {
                 putPerson(i);
             } else {
-                // putCompany(i);
+                putCompany(i);
             }
         }
         elementCount++;
     }
 }
 
-function adjustPageButtons(response) {
+function adjustPageButtons(foundAmount) {
     let buttons = document.querySelectorAll(".pageButton");
 
-    if (response.laureates.length == LIMIT && globalOffset > 0) {
+    if (foundAmount >= LIMIT + 1 && globalOffset > 0) {
         for (let i of buttons) {
             i.style.visibility = "visible";
         }
-    } else if (response.laureates.length == LIMIT && globalOffset == 0) {
+    } else if (foundAmount >= LIMIT + 1 && globalOffset < 1) {
         document.querySelector("#prev-page-button").style.visibility = "hidden";
         document.querySelector("#next-page-button").style.visibility = "visible";
-    } else if (response.laureates.length < LIMIT && globalOffset == 0) {
+    } else if (foundAmount < LIMIT + 1 && globalOffset < 1) {
         for (let i of buttons) {
             i.style.visibility = "hidden";
         }
@@ -130,6 +133,12 @@ function adjustPageButtons(response) {
         document.querySelector("#prev-page-button").style.visibility = "visible";
         document.querySelector("#next-page-button").style.visibility = "hidden";
     }
+}
+
+function dateFormat(date) {
+    let nums = date.split("-");
+    if (nums[1] == "00" || nums[2] == "00") return nums[0];
+    return nums[2] + "." + nums[1] + "." + nums[0];
 }
 
 function putPerson(i) {
@@ -153,7 +162,7 @@ function putPerson(i) {
     nameDiv.appendChild(wikiLink);
 
     infoDiv.className = "person-info";
-    infoDiv.innerHTML = `* ${i.birth.date} - ${i.birth.place ? i.birth.place.locationString.en : ""}<br>+ ${i.death ? `${i.death.date} - ${i.death.place.locationString.en}` : "No Death"}`;
+    infoDiv.innerHTML = `* ${dateFormat(i.birth.date)} - ${i.birth.place ? i.birth.place.locationString.en : ""}<br>+ ${i.death ? `${dateFormat(i.death.date)} - ${i.death.place.locationString.en}` : "No Death"}`;
 
     prizesDiv.className = "person-prize";
 
@@ -176,21 +185,26 @@ function putCompany(i) {
     let resultDiv = document.createElement("div");
     let nameDiv = document.createElement("div");
     let nameLink = document.createElement("a");
+    let wikiLink = document.createElement("a");
     let infoDiv = document.createElement("div");
     let prizesDiv = document.createElement("div");
 
-    resultDiv.className = "search-result-person";
+    resultDiv.className = "search-result-company";
 
     nameLink.href = i.links[1].href;
-    nameLink.innerHTML = i.fullName.en;
+    nameLink.innerHTML = i.orgName.en;
 
-    nameDiv.className = "person-name";
+    wikiLink.href = i.wikipedia.english;
+    wikiLink.innerHTML = " (Wikipedia)"
+
+    nameDiv.className = "company-name";
     nameDiv.appendChild(nameLink);
+    nameDiv.appendChild(wikiLink);
 
-    infoDiv.className = "person-info";
-    infoDiv.innerHTML = `* ${i.birth.date} - ${i.birth.place ? i.birth.place.locationString.en : ""}<br>+ ${i.death ? `${i.death.date} - ${i.death.place.locationString.en}` : "No Death"}`;
+    infoDiv.className = "company-info";
+    infoDiv.innerHTML = `* ${dateFormat(i.founded.date)} - ${i.founded.place ? i.founded.place.locationString.en : ""}`;
 
-    prizesDiv.className = "person-prize";
+    prizesDiv.className = "company-prize";
 
     for (let x of i.nobelPrizes) {
         let newPrizeLink = document.createElement("a");
@@ -208,11 +222,19 @@ function putCompany(i) {
 }
 
 function prevPage() {
-    search(globalOffset - (LIMIT - 1));
+    categoryOffset -= Math.ceil(LIMIT / filters[0].length);
+    if (categoryOffset < 0) categoryOffset = 0;
+
+    search(globalOffset - LIMIT);
+    console.log("OFFSETS_DEBUG_PREV: " + categoryOffset)
 }
 
 function nextPage() {
-    search(globalOffset + (LIMIT - 1));
+    categoryOffset += Math.ceil(LIMIT / filters[0].length);
+    if (categoryOffset < 0) categoryOffset = 0;
+
+    search(globalOffset + LIMIT);
+    console.log("OFFSETS_DEBUG_NEXT: " + categoryOffset)
 }
 
 function getFilter() {

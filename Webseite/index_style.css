@@ -144,6 +144,8 @@ header {
     visibility: hidden;
 }
 
+
+
 .search-result-person {
     width: 100% - 20px;
     padding: 10px;
@@ -182,6 +184,49 @@ header {
     color: var(--std-accnt-col);
     text-decoration: none;
 }
+
+
+
+.search-result-company {
+    width: 100% - 20px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: var(--result-bg-col);
+}
+
+.company-name {
+    font-weight: bold;
+    font-size: 120%;
+    margin-bottom: 100h;
+    width: 90%;
+}
+
+.company-name a {
+    color: var(--std-font-col);
+    text-decoration: none;
+}
+
+.company-name a:hover {
+    color: var(--std-accnt-col);
+    text-decoration: none;
+}
+
+.company-info {
+    font-style: italic;
+}
+
+.company-prize a {
+    color: var(--std-font-col);
+    text-decoration: none;
+}
+
+.company-prize a:hover {
+    color: var(--std-accnt-col);
+    text-decoration: none;
+}
+
+
 
 
 
