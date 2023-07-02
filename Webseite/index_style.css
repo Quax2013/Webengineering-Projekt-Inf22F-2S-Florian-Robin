@@ -5,6 +5,9 @@
     --std-accnt-hover-col: #975a27;
     --std-font-col: #000000;
     --std-font-sty: 'Raleway', sans-serif;
+    --err-font-col: #ffffff;
+    --err-bg-col: #e73d3d;
+    --err-accnt-col: #8f2525;
 }
 
 html {
@@ -28,6 +31,19 @@ header {
     width: 100%;
     position: sticky;
     top: 0;
+}
+
+.error-field{
+    margin-top: 10px;
+    background-color: var(--err-bg-col);
+    color: var(--err-font-col);
+    border-style: solid;
+    border-color: var(--err-accnt-col);
+    border-width: 2px;
+    border-radius: 20px;
+    padding: 5px;
+    font-size: 20px;
+    text-align: center;
 }
 
 #top-border {
@@ -128,6 +144,8 @@ header {
     visibility: hidden;
 }
 
+
+
 .search-result-person {
     width: 100% - 20px;
     padding: 10px;
@@ -140,6 +158,7 @@ header {
     font-weight: bold;
     font-size: 120%;
     margin-bottom: 100h;
+    width: 90%;
 }
 
 .person-name a {
@@ -149,6 +168,7 @@ header {
 
 .person-name a:hover {
     color: var(--std-accnt-col);
+    text-decoration: none;
 }
 
 .person-info {
@@ -162,7 +182,51 @@ header {
 
 .person-prize a:hover {
     color: var(--std-accnt-col);
+    text-decoration: none;
 }
+
+
+
+.search-result-company {
+    width: 100% - 20px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: var(--result-bg-col);
+}
+
+.company-name {
+    font-weight: bold;
+    font-size: 120%;
+    margin-bottom: 100h;
+    width: 90%;
+}
+
+.company-name a {
+    color: var(--std-font-col);
+    text-decoration: none;
+}
+
+.company-name a:hover {
+    color: var(--std-accnt-col);
+    text-decoration: none;
+}
+
+.company-info {
+    font-style: italic;
+}
+
+.company-prize a {
+    color: var(--std-font-col);
+    text-decoration: none;
+}
+
+.company-prize a:hover {
+    color: var(--std-accnt-col);
+    text-decoration: none;
+}
+
+
 
 
 
