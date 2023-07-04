@@ -1,6 +1,7 @@
 let input;
 let globalOffset = 0;
 let categoryOffset = 0;
+let bookmarkIndex = 0
 const LIMIT = 30;
 const categoryAlias = {
     "physics": "phy",
@@ -19,21 +20,25 @@ function mainLogoFunc() {
 ///////////////////////////////////////////////
 function search(offset) {
     let foundAmount = 0;
+    let noLaureates = false;
     for (let i of document.querySelectorAll(".pageButton")) {
         i.style.visibility = "hidden";
     }
-    if (offset == 0) filters = getFilter();
+    if (offset == 0) {
+        filters = getFilter();
+        hideFilters();
+    }
+    bookmarkIndex = 0;
     console.log(filters);
     globalOffset = offset
     document.querySelector("#placeholder").innerHTML = "";
     if (filters[1].length == 0 || filters[1].includes("person")) {
         if ((filters[0].length == 0 || filters[0].length == 6) && (filters[1].length == 0 || filters[1].includes("person"))) {
-            fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT + 1}`, {
+            fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT + 1}&nobelPrizeYear=${filters[2][0]}&yearTo=${filters[2][1]}`, {
                 method: "GET"
             })
                 .then(response => {
                     return response.json();
-
                 })
                 .then(response => {
                     foundAmount = response.laureates.length;
@@ -42,8 +47,8 @@ function search(offset) {
                     console.log(response.laureates);
 
                     if (foundAmount == 0) {
-                        throwSearchError();
-                        return;
+                        if (filters[1].length == 1) throwSearchError();
+                        else noLaureates = true;
                     }
                     handleResponse(response, LIMIT);
                     console.log("AMOUNT_DEBUG: " + foundAmount);
@@ -52,11 +57,69 @@ function search(offset) {
         } else {
             console.log("FILTER_DEBUG")
             let emptyResponses = 0;
+            let fullResponses = 0;
             if (offset == 0) {
                 categoryOffset = 0;
             }
             for (let item of filters[0]) {
-                fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${categoryOffset != 0 ? `&offset=${categoryOffset}` : ""}&limit=${Math.ceil((LIMIT + 1) / filters[0].length)}&nobelPrizeCategory=${categoryAlias[item]}`, {
+                fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${categoryOffset != 0 ? `&offset=${categoryOffset}` : ""}&limit=${Math.ceil(LIMIT / filters[0].length) + 1}&nobelPrizeCategory=${categoryAlias[item]}&nobelPrizeYear=${filters[2][0]}&yearTo=${filters[2][1]}`, {
+                    method: "GET"
+                })
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(response => {
+                        console.log("DEBUG_CATEGORY: " + item)
+                        console.log("DEBUG_CATEGORY: " + categoryAlias[item])
+                        foundAmount += response.laureates.length;
+
+                        console.log(response);
+                        console.log(response.laureates);
+                        if (response.laureates.length == Math.ceil(LIMIT / filters[0].length) + 1) fullResponses++;
+                        if (response.laureates.length == 0) {
+                            emptyResponses++;
+                        } else {
+                            handleResponse(response, Math.ceil(LIMIT / filters[0].length));
+                        }
+                        console.log("AMOUNT_DEBUG: " + foundAmount);
+                        if (fullResponses > 0) adjustPageButtons(LIMIT + 1);
+                        else adjustPageButtons(foundAmount);
+
+                        if (emptyResponses == filters[0].length) {
+                            if (filters[1].length == 1) throwSearchError();
+                            else noLaureates = true;
+                        }
+                    })
+            }
+        }
+    }
+    if (filters[1].length == 0 || filters[1].includes("nobel prize")) {
+        if (filters[0].length == 0 | filters[0].length == 6) {
+            fetch(`https://api.nobelprize.org/2.1/nobelPrizes?nobelPrizeYear=${filters[2][0]}&yearTo=${filters[2][1]}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT + 1}`, {
+                method: "GET"
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(response => {
+                    foundAmount = response.nobelPrizes.length;
+
+                    console.log(response);
+                    console.log(response.nobelPrizes);
+
+                    if (foundAmount == 0 && (noLaureates || filters[1].length == 1)) {
+                        throwSearchError();
+                    }
+                    handleResponse(response, LIMIT);
+                    console.log("AMOUNT_DEBUG: " + foundAmount);
+                    adjustPageButtons(foundAmount);
+                })
+        } else {
+            console.log("FILTER_DEBUG")
+            let emptyResponses = 0;
+            let fullResponses = 0;
+            for (let item of filters[0]) {
+                fetch(`https://api.nobelprize.org/2.1/nobelPrizes?nobelPrizeYear=${filters[2][0]}&yearTo=${filters[2][1]}&nobelPrizeCategory=${categoryAlias[item]}${categoryOffset != 0 ? `&offset=${categoryOffset}` : ""}&limit=${Math.ceil(LIMIT / filters[0].length) + 1}`, {
                     method: "GET"
                 })
                     .then(response => {
@@ -66,20 +129,21 @@ function search(offset) {
                     .then(response => {
                         console.log("DEBUG_CATEGORY: " + item)
                         console.log("DEBUG_CATEGORY: " + categoryAlias[item])
-                        foundAmount += response.laureates.length;
+                        foundAmount += response.nobelPrizes.length;
 
                         console.log(response);
-                        console.log(response.laureates);
-
-                        if (response.laureates.length == 0) {
+                        console.log(response.nobelPrizes);
+                        if (response.nobelPrizes.length == Math.ceil(LIMIT / filters[0].length) + 1) fullResponses++;
+                        if (response.nobelPrizes.length == 0) {
                             emptyResponses++;
                         } else {
                             handleResponse(response, Math.ceil(LIMIT / filters[0].length));
                         }
                         console.log("AMOUNT_DEBUG: " + foundAmount);
-                        adjustPageButtons(foundAmount);
+                        if (fullResponses > 0) adjustPageButtons(LIMIT + 1);
+                        else adjustPageButtons(foundAmount);
 
-                        if (emptyResponses == filters[0].length) {
+                        if (emptyResponses == filters[0].length && (noLaureates || filters[1].length == 1)) {
                             throwSearchError();
                         }
                     })
@@ -100,18 +164,46 @@ function throwSearchError() {
 }
 
 function handleResponse(response, limit) {
+    let container = document.querySelector("#placeholder");
     document.querySelector("#contents").style.transition = "all 0.25s";
     document.querySelector("#contents").style.marginTop = "10vh";
     let elementCount = 0;
-    for (let i of response.laureates) {
-        if (elementCount < limit) {
-            if (i.birth) {
-                putPerson(i);
-            } else {
-                putCompany(i);
+    if (response.laureates) {
+        for (let i of response.laureates) {
+            if (elementCount < limit) {
+                if (i.birth) {
+                    putPerson(i);
+                } else {
+                    putCompany(i);
+                }
             }
+            elementCount++;
         }
-        elementCount++;
+    } else {
+        for (let i of response.nobelPrizes) {
+            if (elementCount < limit) {
+                putNobelPrize(i);
+            }
+            elementCount++;
+        }
+    }
+    for (let i of container.childNodes) {
+        if (!i.classList.contains("error-field") && !i.classList.contains("has-bookmark-button")) {
+            let button = document.createElement("button");
+            button.className = "bookmarkButton";
+
+            let image = document.createElement("img");
+            image.id = "imgBookmark" + bookmarkIndex;
+            image.src = "./imgs/bookmark-5-256.png";        // <---HIER BILD ÄNDERN
+
+            button.onclick = () => changeBookmark(image.id);
+
+            button.appendChild(image);
+            i.appendChild(button);
+            i.classList.add("has-bookmark-button");
+
+            bookmarkIndex++;
+        }
     }
 }
 
@@ -152,9 +244,11 @@ function putPerson(i) {
     resultDiv.className = "search-result-person";
 
     nameLink.href = i.links[1].href;
+    nameLink.target = "_blank";
     nameLink.innerHTML = i.fullName.en;
 
     wikiLink.href = i.wikipedia.english;
+    wikiLink.target = "_blank";
     wikiLink.innerHTML = " (Wikipedia)"
 
     nameDiv.className = "person-name";
@@ -192,9 +286,11 @@ function putCompany(i) {
     resultDiv.className = "search-result-company";
 
     nameLink.href = i.links[1].href;
+    nameLink.target = "_blank";
     nameLink.innerHTML = i.orgName.en;
 
     wikiLink.href = i.wikipedia.english;
+    wikiLink.target = "_blank";
     wikiLink.innerHTML = " (Wikipedia)"
 
     nameDiv.className = "company-name";
@@ -217,6 +313,36 @@ function putCompany(i) {
     resultDiv.appendChild(nameDiv);
     resultDiv.appendChild(infoDiv);
     resultDiv.appendChild(prizesDiv);
+
+    document.querySelector("#placeholder").appendChild(resultDiv);
+}
+
+function putNobelPrize(i) {
+    let resultDiv = document.createElement("div");
+    let titleDiv = document.createElement("div");
+    let infoDiv = document.createElement("div");
+    let laureatesDiv = document.createElement("div");
+
+    resultDiv.className = "search-result-nobelprize";
+
+    titleDiv.className = "nobelprize-title";
+    titleDiv.innerHTML = `${i.categoryFullName.en} ${i.awardYear}`
+
+    infoDiv.className = "nobelprize-info";
+    infoDiv.innerHTML = `Awarded: ${i.dateAwarded ? dateFormat(i.dateAwarded) : "No exact date"}</br>${i.laureates[0].motivation.en}`;
+
+    laureatesDiv.className = "nobelprize-laureates";
+
+    for (let k of i.laureates) {
+        let person = document.createElement("a");
+        if (k.fullName) person.innerHTML = `<br>-${k.fullName.en}`;
+        else person.innerHTML = `<br>-${k.orgName.en}`;
+        laureatesDiv.appendChild(person);
+    }
+
+    resultDiv.appendChild(titleDiv);
+    resultDiv.appendChild(infoDiv);
+    resultDiv.appendChild(laureatesDiv);
 
     document.querySelector("#placeholder").appendChild(resultDiv);
 }
@@ -251,9 +377,10 @@ function getFilter() {
             if (cell.checked) values[k].push(i.innerText.split("\n").shift());
         }
     }
+    values[2].push(document.querySelector("#minYear").value);
+    values[2].push(document.querySelector("#maxYear").value);
     // console.log(labels);         //DEBUG
     // console.log(checkboxes);
-    // console.log(values);
     return values;
 }
 
@@ -308,16 +435,21 @@ function dropdownMenu() {
     document.getElementById("dropdownContent").classList.toggle("show");
 }
 
+function hideFilters() {
+    if (document.getElementById("dropdownContent").classList.contains("show")) document.getElementById("dropdownContent").classList.remove("show");
+}
+
 
 
 
 // ändert die farbe des bookmarks
 function changeBookmark(id) {
+    console.log(id);
     var bookmark = document.getElementById(id);
-    if(bookmark.getAttribute("src")=="./imgs/bookmark-5-256.png"){
-        bookmark.src="./imgs/bookmark-5-256-black.png";
+    if (bookmark.getAttribute("src") == "./imgs/bookmark-5-256.png") {
+        bookmark.src = "./imgs/bookmark-5-256-black.png";
     } else {
-        bookmark.src="./imgs/bookmark-5-256.png";
+        bookmark.src = "./imgs/bookmark-5-256.png";
     }
 }
 
