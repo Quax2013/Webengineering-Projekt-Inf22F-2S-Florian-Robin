@@ -34,7 +34,7 @@ header {
     z-index: 9999;
 }
 
-.error-field{
+.error-field {
     margin-top: 10px;
     background-color: var(--err-bg-col);
     color: var(--err-font-col);
@@ -130,24 +130,33 @@ header {
 
 #placeholder {
     width: 100%;
+    text-align: center;
 }
 
-#prev-page-button{
+#prev-page-button {
     margin-top: 10px;
 }
 
-#next-page-button{
+#next-page-button {
     margin-top: 10px;
     float: right;
 }
 
-.pageButton{
+.pageButton {
     visibility: hidden;
 }
 
 
 
+
+#loading-gif {
+    margin-top: 10px;
+}
+
+
+
 .search-result-person {
+    text-align: left;
     width: 100% - 20px;
     padding: 10px;
     margin-top: 10px;
@@ -190,6 +199,7 @@ header {
 
 
 .search-result-nobelprize {
+    text-align: left;
     width: 100% - 20px;
     padding: 10px;
     margin-top: 10px;
@@ -213,6 +223,7 @@ header {
 
 
 .search-result-company {
+    text-align: left;
     width: 100% - 20px;
     padding: 10px;
     margin-top: 10px;
@@ -265,7 +276,7 @@ header {
 
 
 
-.searchButton{
+.searchButton {
     color: white;
     font-size: 20px;
     border: none;
@@ -277,7 +288,7 @@ header {
     background-color: var(--std-accnt-col);
 }
 
-.searchButton:hover{
+.searchButton:hover {
     background-color: var(--std-accnt-hover-col);
 }
 
@@ -447,6 +458,5 @@ header {
 
 .bookmarkButton:hover {
     background-color: var(--std-accnt-hover-col);
-    
-}
 
+}
