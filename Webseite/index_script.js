@@ -18,6 +18,7 @@ function mainLogoFunc() {
 
 ///////////////////////////////////////////////
 function search(offset) {
+    //TODO Include Years for start / end Search
     let foundAmount = 0;
     for (let i of document.querySelectorAll(".pageButton")) {
         i.style.visibility = "hidden";
@@ -52,11 +53,12 @@ function search(offset) {
         } else {
             console.log("FILTER_DEBUG")
             let emptyResponses = 0;
+            let fullResponses = 0;
             if (offset == 0) {
                 categoryOffset = 0;
             }
             for (let item of filters[0]) {
-                fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${categoryOffset != 0 ? `&offset=${categoryOffset}` : ""}&limit=${Math.ceil((LIMIT + 1) / filters[0].length)}&nobelPrizeCategory=${categoryAlias[item]}`, {
+                fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${categoryOffset != 0 ? `&offset=${categoryOffset}` : ""}&limit=${Math.ceil((LIMIT) / filters[0].length) + 1}&nobelPrizeCategory=${categoryAlias[item]}`, {
                     method: "GET"
                 })
                     .then(response => {
@@ -70,18 +72,47 @@ function search(offset) {
 
                         console.log(response);
                         console.log(response.laureates);
-
+                        if (response.laureates.length == Math.ceil((LIMIT) / filters[0].length) + 1) fullResponses++;
                         if (response.laureates.length == 0) {
                             emptyResponses++;
                         } else {
                             handleResponse(response, Math.ceil(LIMIT / filters[0].length));
                         }
                         console.log("AMOUNT_DEBUG: " + foundAmount);
-                        adjustPageButtons(foundAmount);
+                        if (fullResponses > 0) adjustPageButtons(LIMIT + 1);
+                        else adjustPageButtons(foundAmount);
 
                         if (emptyResponses == filters[0].length) {
                             throwSearchError();
                         }
+                    })
+            }
+        }
+    }
+    return;
+    if (filters[1].length == 0 || filters[1].includes("nobel prize")) {
+        if (filters[0].length == 0 | filters[0].length == 6) {
+            fetch(`https://api.nobelprize.org/2.1/nobelPrizes?nobelPrizeYear=${filters[2][0]}&yearTo=${filters[2][1]}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT + 1}`, {
+                method: "GET"
+            })
+                .then(response => {
+                    return response.json();
+
+                })
+                .then(response => {
+                    console.log(response);
+                })
+        } else {
+            for (let item of filters[0]) {
+                fetch(`https://api.nobelprize.org/2.1/nobelPrizes?nobelPrizeYear=${filters[2][0]}&yearTo=${filters[2][1]}&nobelPrizeCategory=${item}${categoryOffset != 0 ? `&offset=${categoryOffset}` : ""}&limit=${Math.ceil((LIMIT + 1) / filters[0].length)}`, {
+                    method: "GET"
+                })
+                    .then(response => {
+                        return response.json();
+
+                    })
+                    .then(response => {
+                        console.log(response);
                     })
             }
         }
@@ -281,7 +312,7 @@ window.onload = () => {
 }
 
 function debug() {
-    getFilter();
+
 }
 
 
