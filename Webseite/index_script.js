@@ -1,6 +1,7 @@
 let input;
 let globalOffset = 0;
 let categoryOffset = 0;
+let bookmarkIndex = 0
 const LIMIT = 30;
 const categoryAlias = {
     "physics": "phy",
@@ -27,6 +28,7 @@ function search(offset) {
         filters = getFilter();
         hideFilters();
     }
+    bookmarkIndex = 0;
     console.log(filters);
     globalOffset = offset
     document.querySelector("#placeholder").innerHTML = "";
@@ -185,14 +187,24 @@ function handleResponse(response, limit) {
             elementCount++;
         }
     }
-    // for (let i of container.childNodes){
-    //     if (!i.classList.contains("error-field") && !i.classList.contains("bookmark-added")){
-    //         let button = document.createElement("button");
-    //         button.className = "bookmarkButton";
-    //         button.onclick = "abFunc()";
+    for (let i of container.childNodes) {
+        if (!i.classList.contains("error-field") && !i.classList.contains("has-bookmark-button")) {
+            let button = document.createElement("button");
+            button.className = "bookmarkButton";
 
-    //     }
-    // }
+            let image = document.createElement("img");
+            image.id = "imgBookmark" + bookmarkIndex;
+            image.src = "./imgs/bookmark-5-256.png";        // <---HIER BILD ÄNDERN
+
+            button.onclick = () => changeBookmark(image.id);
+
+            button.appendChild(image);
+            i.appendChild(button);
+            i.classList.add("has-bookmark-button");
+
+            bookmarkIndex++;
+        }
+    }
 }
 
 function adjustPageButtons(foundAmount) {
@@ -424,7 +436,7 @@ function dropdownMenu() {
 }
 
 function hideFilters() {
-    if (document.getElementById("content-dropdown").classList.contains("show")) document.getElementById("content-dropdown").classList.remove("show");
+    if (document.getElementById("dropdownContent").classList.contains("show")) document.getElementById("dropdownContent").classList.remove("show");
 }
 
 
@@ -432,11 +444,12 @@ function hideFilters() {
 
 // ändert die farbe des bookmarks
 function changeBookmark(id) {
+    console.log(id);
     var bookmark = document.getElementById(id);
-    if(bookmark.getAttribute("src")=="./imgs/bookmark-5-256.png"){
-        bookmark.src="./imgs/bookmark-5-256-black.png";
+    if (bookmark.getAttribute("src") == "./imgs/bookmark-5-256.png") {
+        bookmark.src = "./imgs/bookmark-5-256-black.png";
     } else {
-        bookmark.src="./imgs/bookmark-5-256.png";
+        bookmark.src = "./imgs/bookmark-5-256.png";
     }
 }
 
