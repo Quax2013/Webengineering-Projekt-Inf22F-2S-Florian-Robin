@@ -281,7 +281,7 @@ header {
 }
 
 
-
+/* Klasse für dropdown Content */
 .dropdown-content {
     position: absolute;
     width: 40%;
@@ -295,7 +295,7 @@ header {
 }
 
 
-
+/* die einzelnen Container um Inhalt themathisch zu sortieren */
 .divContentDropdown {
     left: 0;
     align-self: start;
@@ -335,15 +335,13 @@ header {
 
 
 
-
+/* Alles für die Jahrboxen */
 .yearInput {
     position: relative;
     padding-left: 5%;
     text-align: center;
     align-self: right;
     width: 30%;
-
-
 }
 
 
@@ -355,6 +353,8 @@ header {
 
 
 
+
+/* Alles für die checkbox */
 /* Customize the label (the checkbox) */
 .checkbox {
     display: block;
@@ -426,18 +426,9 @@ header {
 
 
 
-.testtttttt {
-    background: transparent;
-    border: none !important;
-    
-}
 
 
-
-
-
-
-
+/* Alles für bookmark */
 .bookmarkButton {
     width: 10%;
     height: auto;

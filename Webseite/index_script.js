@@ -418,10 +418,9 @@ function debug() {
 
 
 
-/* When the user clicks on the button,
-toggle between hiding and showing the dropdown content */
-function myFunction() {
-    document.getElementById("content-dropdown").classList.toggle("show");
+/* Funktion für Button dropdown, schaltet dropdown menü an/aus */
+function dropdownMenu() {
+    document.getElementById("dropdownContent").classList.toggle("show");
 }
 
 function hideFilters() {
@@ -431,24 +430,13 @@ function hideFilters() {
 
 
 
-
-
-
-
-
-function abFunc() {
-    document.getElementById("idTEST").src = "./imgs/bookmark-5-256-black.png";
-    return false;
+// ändert die farbe des bookmarks
+function changeBookmark(id) {
+    var bookmark = document.getElementById(id);
+    if(bookmark.getAttribute("src")=="./imgs/bookmark-5-256.png"){
+        bookmark.src="./imgs/bookmark-5-256-black.png";
+    } else {
+        bookmark.src="./imgs/bookmark-5-256.png";
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
 
