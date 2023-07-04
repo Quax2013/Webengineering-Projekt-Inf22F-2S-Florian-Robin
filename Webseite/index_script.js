@@ -348,10 +348,10 @@ function myFunction() {
 
 
 
-
-
-
-
+function abFunc() {
+    document.getElementById("idTEST").src="./imgs/bookmark-5-256-black.png";
+    return false;
+}
 
 
 

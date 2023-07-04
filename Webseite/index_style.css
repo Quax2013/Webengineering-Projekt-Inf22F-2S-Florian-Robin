@@ -312,12 +312,21 @@ header {
 
 
 
+.yearInput {
+    position: relative;
+    padding-left: 5%;
+    text-align: center;
+    align-self: right;
+    width: 30%;
 
 
+}
 
 
-
-
+#contentYear {
+    display: flex;
+    flex-direction: row;
+}
 
 
 
@@ -402,6 +411,21 @@ header {
 
 
 
-.testtttttt:hover{
-    background-color: var(--std-accnt-hover-col);
+
+
+
+.bookmarkButton {
+    width: 10%;
+    height: auto;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: var(--std-accnt-col);
 }
+
+.bookmarkButton:hover {
+    background-color: var(--std-accnt-hover-col);
+    
+}
+

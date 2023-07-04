@@ -84,16 +84,27 @@
 
                 </div>
 
-                <div class="divContentDropdown">
-                    <!-- https://metroui.org.ua/double-slider.html -->
-                    <input data-role="doubleslider">
-                    <button class="mif-bookmark testtttttt" ></button>
-                    <span class="mif-bookmark fg-white "></span>
+                <div id="contentYear" class="divContentDropdown">
+                    <div>
+                        <label for="minYear">From
+                            <input type="number" id="minYear" class="yearInput" min="1903" max="2023" step="1"
+                                value="1903">
+                        </label>
+                        <label for="maxYear">To
+                            <input type="number" id="maxYear" class="yearInput" min="1903" max="2023" step="1"
+                                value="2023">
+                        </label>
+                    </div>
+                    <button class="bookmarkButton" onclick="abFunc"><img id="idTEST" src="./imgs/bookmark-5-256.png"></button>
+                    
 
+
+                    <!-- https://metroui.org.ua/double-slider.html -->
                 </div>
 
             </div>
             <div id="placeholder"></div>
+            <!--https://www.iconsdb.com/white-icons/white-bookmark-icons.html-->
             <button id="prev-page-button" class="searchButton pageButton" onclick="prevPage()">Previous Page</button>
             <button id="next-page-button" class="searchButton pageButton" onclick="nextPage()">Next Page</button>
         </div>
