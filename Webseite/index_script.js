@@ -317,19 +317,12 @@ function myFunction() {
 
 
 
-function abFunc() {
-    document.getElementById("idTEST").src="./imgs/bookmark-5-256-black.png";
-    return false;
+function changeBookmark(id) {
+    var bookmark = document.getElementById(id);
+    if(bookmark.getAttribute("src")=="./imgs/bookmark-5-256.png"){
+        bookmark.src="./imgs/bookmark-5-256-black.png";
+    } else {
+        bookmark.src="./imgs/bookmark-5-256.png";
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
 
