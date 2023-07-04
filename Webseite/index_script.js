@@ -21,6 +21,11 @@ function mainLogoFunc() {
 function search(offset) {
     let foundAmount = 0;
     let noLaureates = false;
+
+    let loading = document.createElement("img");
+    loading.src = "./imgs/loading-gif.gif";
+    loading.id = "loading-gif";
+
     for (let i of document.querySelectorAll(".pageButton")) {
         i.style.visibility = "hidden";
     }
@@ -32,6 +37,7 @@ function search(offset) {
     console.log(filters);
     globalOffset = offset
     document.querySelector("#placeholder").innerHTML = "";
+    document.querySelector("#placeholder").appendChild(loading);
     if (filters[1].length == 0 || filters[1].includes("person")) {
         if ((filters[0].length == 0 || filters[0].length == 6) && (filters[1].length == 0 || filters[1].includes("person"))) {
             fetch(`https://api.nobelprize.org/2.1/laureates?name=${input.value}${offset != 0 ? `&offset=${offset}` : ""}&limit=${LIMIT + 1}&nobelPrizeYear=${filters[2][0]}&yearTo=${filters[2][1]}`, {
@@ -41,6 +47,8 @@ function search(offset) {
                     return response.json();
                 })
                 .then(response => {
+                    if (document.querySelector("#loading-gif"))document.querySelector("#loading-gif").remove();
+                    
                     foundAmount = response.laureates.length;
 
                     console.log(response);
@@ -69,6 +77,8 @@ function search(offset) {
                         return response.json();
                     })
                     .then(response => {
+                        if (document.querySelector("#loading-gif"))document.querySelector("#loading-gif").remove();
+
                         console.log("DEBUG_CATEGORY: " + item)
                         console.log("DEBUG_CATEGORY: " + categoryAlias[item])
                         foundAmount += response.laureates.length;
@@ -102,6 +112,8 @@ function search(offset) {
                     return response.json();
                 })
                 .then(response => {
+                    if (document.querySelector("#loading-gif"))document.querySelector("#loading-gif").remove();
+
                     foundAmount = response.nobelPrizes.length;
 
                     console.log(response);
@@ -127,6 +139,8 @@ function search(offset) {
 
                     })
                     .then(response => {
+                        if (document.querySelector("#loading-gif"))document.querySelector("#loading-gif").remove();
+
                         console.log("DEBUG_CATEGORY: " + item)
                         console.log("DEBUG_CATEGORY: " + categoryAlias[item])
                         foundAmount += response.nobelPrizes.length;
@@ -408,7 +422,16 @@ window.onload = () => {
 }
 
 function debug() {
-    getFilter();
+    fetch(`https://api.nobelprize.org/2.1/nobelPrizes?limit=10000`, {
+                    method: "GET"
+                })
+                    .then(response => {
+                        return response.json();
+
+                    })
+                    .then(response => {
+                        console.log(response.nobelPrizes)
+                    })
 }
 
 
