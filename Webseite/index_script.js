@@ -47,8 +47,8 @@ function search(offset) {
                     return response.json();
                 })
                 .then(response => {
-                    if (document.querySelector("#loading-gif"))document.querySelector("#loading-gif").remove();
-                    
+                    if (document.querySelector("#loading-gif")) document.querySelector("#loading-gif").remove();
+
                     foundAmount = response.laureates.length;
 
                     console.log(response);
@@ -77,7 +77,7 @@ function search(offset) {
                         return response.json();
                     })
                     .then(response => {
-                        if (document.querySelector("#loading-gif"))document.querySelector("#loading-gif").remove();
+                        if (document.querySelector("#loading-gif")) document.querySelector("#loading-gif").remove();
 
                         console.log("DEBUG_CATEGORY: " + item)
                         console.log("DEBUG_CATEGORY: " + categoryAlias[item])
@@ -112,7 +112,7 @@ function search(offset) {
                     return response.json();
                 })
                 .then(response => {
-                    if (document.querySelector("#loading-gif"))document.querySelector("#loading-gif").remove();
+                    if (document.querySelector("#loading-gif")) document.querySelector("#loading-gif").remove();
 
                     foundAmount = response.nobelPrizes.length;
 
@@ -139,7 +139,7 @@ function search(offset) {
 
                     })
                     .then(response => {
-                        if (document.querySelector("#loading-gif"))document.querySelector("#loading-gif").remove();
+                        if (document.querySelector("#loading-gif")) document.querySelector("#loading-gif").remove();
 
                         console.log("DEBUG_CATEGORY: " + item)
                         console.log("DEBUG_CATEGORY: " + categoryAlias[item])
@@ -209,19 +209,19 @@ function handleResponse(response, limit) {
     }
 }
 
-function addBookmarkButton(container, index){
+function addBookmarkButton(container, index) {
     let button = document.createElement("button");
-            button.className = "bookmarkButton";
+    button.className = "bookmarkButton";
 
-            let image = document.createElement("img");
-            image.id = "imgBookmark" + bookmarkIndex;
-            image.src = "./imgs/bookmark-5-256.png";        // <---HIER BILD ÄNDERN
+    let image = document.createElement("img");
+    image.id = "imgBookmark" + bookmarkIndex;
+    image.src = "./imgs/bookmark-5-256.png";        // <---HIER BILD ÄNDERN
 
-            button.onclick = () => changeBookmark(image.id);
+    button.onclick = () => changeBookmark(image.id);
 
-            button.appendChild(image);
-            container.appendChild(button);
-            container.classList.add("has-bookmark-button");
+    button.appendChild(image);
+    container.appendChild(button);
+    container.classList.add("has-bookmark-button");
 }
 
 function adjustPageButtons(foundAmount) {
@@ -289,6 +289,8 @@ function putPerson(i) {
     resultDiv.appendChild(infoDiv);
     resultDiv.appendChild(prizesDiv);
 
+    resultDiv.dataset.entryId = "[%LAUREATE_ID=" + i.id + "=ID_END%]";
+
     document.querySelector("#placeholder").appendChild(resultDiv);
 }
 
@@ -331,6 +333,8 @@ function putCompany(i) {
     resultDiv.appendChild(infoDiv);
     resultDiv.appendChild(prizesDiv);
 
+    resultDiv.dataset.entryId = "[%COMPANY_ID=" + i.id + "=ID_END%]";
+
     document.querySelector("#placeholder").appendChild(resultDiv);
 }
 
@@ -360,6 +364,8 @@ function putNobelPrize(i) {
     resultDiv.appendChild(titleDiv);
     resultDiv.appendChild(infoDiv);
     resultDiv.appendChild(laureatesDiv);
+
+    resultDiv.dataset.entryId = "[%NOBELPRIZE_ID=" + `${i.awardYear}${i.category.en}` + "=ID_END%]";
 
     document.querySelector("#placeholder").appendChild(resultDiv);
 }
@@ -426,15 +432,15 @@ window.onload = () => {
 
 function debug() {
     fetch(`https://api.nobelprize.org/2.1/nobelPrizes?limit=10000`, {
-                    method: "GET"
-                })
-                    .then(response => {
-                        return response.json();
+        method: "GET"
+    })
+        .then(response => {
+            return response.json();
 
-                    })
-                    .then(response => {
-                        console.log(response.nobelPrizes)
-                    })
+        })
+        .then(response => {
+            console.log(response.nobelPrizes)
+        })
 }
 
 
