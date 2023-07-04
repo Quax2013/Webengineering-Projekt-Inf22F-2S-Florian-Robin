@@ -446,8 +446,22 @@ function hideFilters() {
 function changeBookmark(id) {
     console.log(id);
     var bookmark = document.getElementById(id);
+    var bookmarkParentDiv = bookmark.parentElement.parentElement.innerHTML;
+    console.log(bookmarkParentDiv);
     if (bookmark.getAttribute("src") == "./imgs/bookmark-5-256.png") {
         bookmark.src = "./imgs/bookmark-5-256-black.png";
+
+
+        let position = bookmarkParentDiv.search("<button");
+        bookmarkParentDiv = bookmarkParentDiv.slice(0,position);
+        console.log(position);
+        console.log(bookmarkParentDiv);
+
+        console.log(JSON.stringify(bookmarkParentDiv));
+
+
+
+
     } else {
         bookmark.src = "./imgs/bookmark-5-256.png";
     }
