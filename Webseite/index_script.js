@@ -203,7 +203,14 @@ function handleResponse(response, limit) {
     }
     for (let i of container.childNodes) {
         if (!i.classList.contains("error-field") && !i.classList.contains("has-bookmark-button")) {
-            let button = document.createElement("button");
+            addBookmarkButton(i, bookmarkIndex);
+            bookmarkIndex++;
+        }
+    }
+}
+
+function addBookmarkButton(container, index){
+    let button = document.createElement("button");
             button.className = "bookmarkButton";
 
             let image = document.createElement("img");
@@ -213,12 +220,8 @@ function handleResponse(response, limit) {
             button.onclick = () => changeBookmark(image.id);
 
             button.appendChild(image);
-            i.appendChild(button);
-            i.classList.add("has-bookmark-button");
-
-            bookmarkIndex++;
-        }
-    }
+            container.appendChild(button);
+            container.classList.add("has-bookmark-button");
 }
 
 function adjustPageButtons(foundAmount) {
