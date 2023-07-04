@@ -305,7 +305,7 @@ function debug() {
 
 /* Funktion für Button dropdown, schaltet dropdown menü an/aus */
 function dropdownMenu() {
-    document.getElementById("content-dropdown").classList.toggle("show");
+    document.getElementById("dropdownContent").classList.toggle("show");
 }
 
 
