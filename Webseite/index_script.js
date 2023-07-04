@@ -303,20 +303,15 @@ function debug() {
 
 
 
-/* When the user clicks on the button,
-toggle between hiding and showing the dropdown content */
-function myFunction() {
+/* Funktion für Button dropdown, schaltet dropdown menü an/aus */
+function dropdownMenu() {
     document.getElementById("content-dropdown").classList.toggle("show");
 }
 
 
 
 
-
-
-
-
-
+// ändert die farbe des bookmarks
 function changeBookmark(id) {
     var bookmark = document.getElementById(id);
     if(bookmark.getAttribute("src")=="./imgs/bookmark-5-256.png"){
