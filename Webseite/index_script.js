@@ -435,19 +435,38 @@ window.onload = () => {
             search(0);
         }
     });
-    if (screen.width <= 1000){
+    if (screen.width <= 1000) {
         let filterButton = document.querySelector("#filter-button");
         filterButton.innerText = filterButton.innerText.split(" ").pop();
 
         let bookmarkButtonChange = document.querySelector("#search-bookmark-button");
         bookmarkButtonChange.innerHTML = ""
-        
+
         let bookmarkInsert = document.createElement("img");
         bookmarkInsert.src = "./imgs/bookmark-5-256.png";
-        
+
         bookmarkButtonChange.appendChild(bookmarkInsert);
     }
 }
+
+window.onresize = function (event) {
+    let filterButton = document.querySelector("#filter-button");
+    let bookmarkButtonChange = document.querySelector("#search-bookmark-button");
+    if (screen.width <= 1000) {
+
+        filterButton.innerText = filterButton.innerText.split(" ").pop();
+
+        bookmarkButtonChange.innerHTML = ""
+
+        let bookmarkInsert = document.createElement("img");
+        bookmarkInsert.src = "./imgs/bookmark-5-256.png";
+
+        bookmarkButtonChange.appendChild(bookmarkInsert);
+    } else {
+        if (!filterButton.innerText.startsWith("Filter")) filterButton.innerText = "Filter " + filterButton.innerText;
+        bookmarkButtonChange.innerHTML = "Bookmarks";
+    }
+};
 
 
 
@@ -587,7 +606,7 @@ function resetBookmarks() {
     localStorage.clear();
 
     let images = document.querySelectorAll("img[id^='imgBookmark']");
-    for (let i of images){
+    for (let i of images) {
         i.src = "./imgs/bookmark-5-256.png";
     }
 }
