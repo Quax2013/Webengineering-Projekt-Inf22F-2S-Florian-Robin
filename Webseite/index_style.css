@@ -99,6 +99,14 @@ header {
     margin-left: 10px;
 }
 
+#search-bookmark-button {
+    float: right;
+    border: 0;
+    border-radius: 20px;
+    margin-left: 10px;
+}
+
+
 
 
 
@@ -264,8 +272,6 @@ header {
 
 
 
-
-
 .filter {
     color: white;
     padding: 16px;
@@ -357,7 +363,7 @@ header {
 }
 
 
-#contentYear {
+#content-year {
     display: flex;
     flex-direction: row;
 }

@@ -215,7 +215,14 @@ function addBookmarkButton(container, index) {
 
     let image = document.createElement("img");
     image.id = "imgBookmark" + bookmarkIndex;
-    image.src = "./imgs/bookmark-5-256.png";        // <---HIER BILD ÄNDERN
+
+
+    let containerId = container.dataset.entryId;
+    if (localStorage.getItem(containerId) != null) {
+        image.src = "./imgs/bookmark-5-256-black.png";              //Wenn bookmark vorhanden, bookmark = schwarz
+    } else {
+        image.src = "./imgs/bookmark-5-256.png";
+    }
 
     button.onclick = () => changeBookmark(image.id);
 
@@ -289,7 +296,7 @@ function putPerson(i) {
     resultDiv.appendChild(infoDiv);
     resultDiv.appendChild(prizesDiv);
 
-    resultDiv.dataset.entryId = "[%LAUREATE_ID=" + i.id + "=ID_END%]";
+    resultDiv.dataset.entryId = "PERSON_ID=" + i.id;
 
     document.querySelector("#placeholder").appendChild(resultDiv);
 }
@@ -333,7 +340,7 @@ function putCompany(i) {
     resultDiv.appendChild(infoDiv);
     resultDiv.appendChild(prizesDiv);
 
-    resultDiv.dataset.entryId = "[%COMPANY_ID=" + i.id + "=ID_END%]";
+    resultDiv.dataset.entryId = "COMPANY_ID=" + i.id;
 
     document.querySelector("#placeholder").appendChild(resultDiv);
 }
@@ -365,7 +372,7 @@ function putNobelPrize(i) {
     resultDiv.appendChild(infoDiv);
     resultDiv.appendChild(laureatesDiv);
 
-    resultDiv.dataset.entryId = "[%NOBELPRIZE_ID=" + `${i.awardYear}${i.category.en}` + "=ID_END%]";
+    resultDiv.dataset.entryId = "NOBELPRIZE_ID=" + `${i.awardYear}${i.category.en}`;
 
     document.querySelector("#placeholder").appendChild(resultDiv);
 }
@@ -430,18 +437,6 @@ window.onload = () => {
     });
 }
 
-function debug() {
-    fetch(`https://api.nobelprize.org/2.1/nobelPrizes?limit=10000`, {
-        method: "GET"
-    })
-        .then(response => {
-            return response.json();
-
-        })
-        .then(response => {
-            console.log(response.nobelPrizes)
-        })
-}
 
 
 
@@ -476,12 +471,122 @@ function hideFilters() {
 
 // ändert die farbe des bookmarks
 function changeBookmark(id) {
-    console.log(id);
     var bookmark = document.getElementById(id);
+    var bookmarkParentDiv = bookmark.parentElement.parentElement.innerHTML;
+    var containerId = bookmark.parentElement.parentElement.dataset.entryId;
+
     if (bookmark.getAttribute("src") == "./imgs/bookmark-5-256.png") {
         bookmark.src = "./imgs/bookmark-5-256-black.png";
+
+        let position = bookmarkParentDiv.search("<button");
+        bookmarkParentDiv = bookmarkParentDiv.slice(0, position);
+        localStorage.setItem(containerId, bookmarkParentDiv);
+
     } else {
+        localStorage.removeItem(containerId);
         bookmark.src = "./imgs/bookmark-5-256.png";
     }
 }
 
+
+
+
+
+
+
+
+
+function adjustPageButtons(foundAmount) {
+    let buttons = document.querySelectorAll(".pageButton");
+
+    if (foundAmount >= LIMIT + 1 && globalOffset > 0) {
+        for (let i of buttons) {
+            i.style.visibility = "visible";
+        }
+    } else if (foundAmount >= LIMIT + 1 && globalOffset < 1) {
+        document.querySelector("#prev-page-button").style.visibility = "hidden";
+        document.querySelector("#next-page-button").style.visibility = "visible";
+    } else if (foundAmount < LIMIT + 1 && globalOffset < 1) {
+        for (let i of buttons) {
+            i.style.visibility = "hidden";
+        }
+    } else {
+        document.querySelector("#prev-page-button").style.visibility = "visible";
+        document.querySelector("#next-page-button").style.visibility = "hidden";
+    }
+}
+
+
+
+
+function showBookmarks() {
+    let buttons = document.querySelectorAll(".pageButton");
+    for (let i of buttons) {
+        i.style.visibility = "hidden";
+    }
+
+    document.querySelector("#placeholder").innerHTML = "";
+    let container = document.querySelector("#placeholder");
+    document.querySelector("#contents").style.transition = "all 0.25s";
+    document.querySelector("#contents").style.marginTop = "10vh";
+    let keys = Object.keys(localStorage),
+        numberContainer = keys.length;
+
+    for (let i = 0; i < numberContainer; i++) {
+        let containerId = keys[i];
+        bookmarkParentDiv = localStorage.getItem(keys[i]);
+        if (containerId[0] == "P") {
+            showBookmarkContainer(containerId, bookmarkParentDiv, "person");
+        } else if (containerId[0] == "C") {
+            showBookmarkContainer(containerId, bookmarkParentDiv, "company");
+        } else if (containerId[0] == "N") {
+            showBookmarkContainer(containerId, bookmarkParentDiv, "nobelprize");
+        } else {
+            console.log("Fehler beim localstorage key: key konnte keiner Klasse zugeordnet werden")
+        }
+
+    }
+
+    for (let c of container.childNodes) {
+        if (!c.classList.contains("error-field") && !c.classList.contains("has-bookmark-button")) {
+            addBookmarkButton(c, bookmarkIndex);
+            bookmarkIndex++;
+        }
+    }
+
+
+
+}
+
+
+function showBookmarkContainer(containerId, bookmarkParentDiv, category) {
+    let resultDiv = document.createElement("div");
+    resultDiv.className = "search-result-" + category;
+
+    resultDiv.dataset.entryId = containerId;
+
+    resultDiv.innerHTML = (bookmarkParentDiv);
+
+    document.querySelector("#placeholder").appendChild(resultDiv);
+}
+
+
+function resetBookmarks() {
+    localStorage.clear();
+
+    let i = 0
+    while (true) {
+        let imgId = document.getElementById("imgBookmark" + i);
+        if (imgId == null) {
+            break;
+        }
+        imgId.src = "./imgs/bookmark-5-256.png";
+        i++;
+    }
+}
+
+
+
+function resetFilter() {
+
+}
