@@ -39,7 +39,7 @@
 
                 <input type="text" id="search-bar" placeholder="eg. Einstein, Obama">
                 <button id="search-button" onclick="search(0)" class="searchButton">Search</button>
-                <button id="debug-button" onclick="debug()">#DEBUG#</button>
+                <button id="search-bookmark-button" onclick="showBookmarks()" class="searchButton">Bookmarks</button>
             </div>
             <div id="dropdownContent" class="dropdown-content">
                 <div class="divContentDropdown">
@@ -83,7 +83,7 @@
                     </label>
                 </div>
 
-                <div id="contentYear" class="divContentDropdown">
+                <div id="content-year" class="divContentDropdown">
                     <div>
                         <label for="minYear">From
                             <input type="number" id="minYear" class="yearInput" min="1901" max="2023" step="1"
@@ -94,11 +94,10 @@
                                 value="2023">
                         </label>
                     </div>
-                    <!-- <button class="bookmarkButton" onclick="changeBookmark('imgBookmark')"><img id="imgBookmark" src="./imgs/bookmark-5-256.png"></button> -->
-                    
-
-
-                    <!-- https://metroui.org.ua/double-slider.html -->
+                </div>
+                <div class="divContentDropdown">
+                    <button class="searchButton" onclick="resetFilter()">Reset filter</button>
+                    <button class="searchButton" onclick="resetBookmarks()">Reset bookmarks</button>
                 </div>
 
             </div>
