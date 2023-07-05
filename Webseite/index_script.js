@@ -435,6 +435,18 @@ window.onload = () => {
             search(0);
         }
     });
+    if (screen.width <= 1000){
+        let filterButton = document.querySelector("#filter-button");
+        filterButton.innerText = filterButton.innerText.split(" ").pop();
+
+        let bookmarkButtonChange = document.querySelector("#search-bookmark-button");
+        bookmarkButtonChange.innerHTML = ""
+        
+        let bookmarkInsert = document.createElement("img");
+        bookmarkInsert.src = "./imgs/bookmark-5-256.png";
+        
+        bookmarkButtonChange.appendChild(bookmarkInsert);
+    }
 }
 
 
@@ -546,7 +558,7 @@ function showBookmarks() {
         }
 
     }
-
+    let bookmarkIndex = 0;
     for (let c of container.childNodes) {
         if (!c.classList.contains("error-field") && !c.classList.contains("has-bookmark-button")) {
             addBookmarkButton(c, bookmarkIndex);
