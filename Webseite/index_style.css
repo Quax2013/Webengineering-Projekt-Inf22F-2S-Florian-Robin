@@ -192,7 +192,6 @@ header {
     text-decoration: none;
 }
 
-.person-name a:focus,
 .person-name a:hover {
     color: var(--std-accnt-col);
     text-decoration: none;
@@ -207,7 +206,6 @@ header {
     text-decoration: none;
 }
 
-.person-prize a:focus,
 .person-prize a:hover {
     color: var(--std-accnt-col);
     text-decoration: none;
@@ -261,7 +259,6 @@ header {
     text-decoration: none;
 }
 
-.company-name a:focus,
 .company-name a:hover {
     color: var(--std-accnt-col);
     text-decoration: none;
@@ -276,7 +273,6 @@ header {
     text-decoration: none;
 }
 
-.company-prize a:focus,
 .company-prize a:hover {
     color: var(--std-accnt-col);
     text-decoration: none;
@@ -306,7 +302,6 @@ header {
     background-color: var(--std-accnt-col);
 }
 
-.searchButton:focus,
 .searchButton:hover {
     background-color: var(--std-accnt-hover-col);
 }
@@ -468,10 +463,8 @@ header {
     right: 0;
 }
 
-.bookmarkButton:focus,
 .bookmarkButton:hover {
     background-color: var(--std-accnt-hover-col);
-
 }
 
 @media (max-width:1000px) {
