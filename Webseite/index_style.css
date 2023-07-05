@@ -436,8 +436,8 @@ header {
 
 /* Style the checkmark/indicator */
 .checkbox .checkmark:after {
-    left: 4px;
-    top: 0px;
+    left: 5px;
+    top: 1px;
     width: 5px;
     height: 10px;
     border: solid white;
