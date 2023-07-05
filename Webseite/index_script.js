@@ -558,7 +558,7 @@ function showBookmarks() {
         }
 
     }
-
+    let bookmarkIndex = 0;
     for (let c of container.childNodes) {
         if (!c.classList.contains("error-field") && !c.classList.contains("has-bookmark-button")) {
             addBookmarkButton(c, bookmarkIndex);
