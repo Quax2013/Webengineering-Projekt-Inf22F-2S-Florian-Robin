@@ -2,12 +2,18 @@
     --std-bg-col: #fff2e3;
     --result-bg-col: #ffffff;
     --std-accnt-col: #B59410;
-    --std-accnt-hover-col: #975a27;
+    --std-accnt-hover-col: #886823;
     --std-font-col: #000000;
     --std-font-sty: 'Raleway', sans-serif;
     --err-font-col: #ffffff;
     --err-bg-col: #e73d3d;
     --err-accnt-col: #8f2525;
+    --fltr-bg-col: #8a8a8a;
+    --fltr-cnt-col: #bebebe;
+    --fltr-font-col: #ffffff;
+    --chckmrk-bg-col: #ffffff;
+    --chckmrk-bg-hvr-col: #cccccc;
+    --chckmrk-bg-chck-col: #B59410;
 }
 
 html {
@@ -25,6 +31,7 @@ body {
 
 body::-webkit-scrollbar {
     display: none;
+    font-size: 15px;
 }
 
 header {
@@ -56,7 +63,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+    font-size: 1.5em;
     font-style: italic;
 }
 
@@ -90,6 +97,7 @@ header {
     width: 100%;
     display: flex;
     fill: 1;
+    font-size: 1em;
 }
 
 #search-button {
@@ -184,6 +192,7 @@ header {
     text-decoration: none;
 }
 
+.person-name a:focus,
 .person-name a:hover {
     color: var(--std-accnt-col);
     text-decoration: none;
@@ -198,6 +207,7 @@ header {
     text-decoration: none;
 }
 
+.person-prize a:focus,
 .person-prize a:hover {
     color: var(--std-accnt-col);
     text-decoration: none;
@@ -251,6 +261,7 @@ header {
     text-decoration: none;
 }
 
+.company-name a:focus,
 .company-name a:hover {
     color: var(--std-accnt-col);
     text-decoration: none;
@@ -265,6 +276,7 @@ header {
     text-decoration: none;
 }
 
+.company-prize a:focus,
 .company-prize a:hover {
     color: var(--std-accnt-col);
     text-decoration: none;
@@ -273,9 +285,9 @@ header {
 
 
 .filter {
-    color: white;
+    color: var(--fltr-font-col);
     padding: 16px;
-    font-size: 16px;
+    font-size: 0.7em;
     border: none;
     cursor: pointer;
 }
@@ -283,8 +295,8 @@ header {
 
 
 .searchButton {
-    color: white;
-    font-size: 20px;
+    color: var(--fltr-font-col);
+    font-size: 1.3em;
     border: none;
     border-radius: 20px;
     cursor: pointer;
@@ -294,6 +306,7 @@ header {
     background-color: var(--std-accnt-col);
 }
 
+.searchButton:focus,
 .searchButton:hover {
     background-color: var(--std-accnt-hover-col);
 }
@@ -305,7 +318,7 @@ header {
     width: 40%;
     overflow: auto;
     display: none;
-    background-color: #eda4a4;
+    background-color: var(--fltr-bg-col);
     padding: 10px;
     margin-top: 10px;
     border-radius: 10px;
@@ -320,15 +333,8 @@ header {
     justify-self: left;
     margin: 1%;
     border-radius: 5px;
-    background-color: #f4c4c4;
+    background-color: var(--fltr-cnt-col);
     padding: 10px;
-}
-
-
-
-.filter:hover,
-.filter:focus {
-    background-color: #3e8e41;
 }
 
 #dropdown {
@@ -380,7 +386,7 @@ header {
     padding-left: 25px;
     margin-bottom: 6px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 0.8em;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -403,17 +409,17 @@ header {
     left: 0;
     height: 15px;
     width: 15px;
-    background-color: #eee;
+    background-color: var(--chckmrk-bg-col);
 }
 
 /* On mouse-over, add a grey background color */
 .checkbox:hover input~.checkmark {
-    background-color: #ccc;
+    background-color: var(--chckmrk-bg-hvr-col);
 }
 
 /* When the checkbox is checked, add a blue background */
 .checkbox input:checked~.checkmark {
-    background-color: #f32121;
+    background-color: var(--chckmrk-bg-chck-col);
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -462,7 +468,24 @@ header {
     right: 0;
 }
 
+.bookmarkButton:focus,
 .bookmarkButton:hover {
     background-color: var(--std-accnt-hover-col);
 
+}
+
+@media (max-width:1000px) {
+    body{
+        font-size: 12px;
+    }
+    #filter-button{
+        height: 100%;
+    }
+    #search-bookmark-button{
+        width: 4em;
+        height: auto;
+    }
+    #dropdownContent{
+        width: 100%;
+    }
 }

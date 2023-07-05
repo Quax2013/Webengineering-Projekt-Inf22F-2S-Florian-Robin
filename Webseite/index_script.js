@@ -34,7 +34,7 @@ function search(offset) {
         hideFilters();
     }
     bookmarkIndex = 0;
-    console.log(filters);
+    // console.log(filters);
     globalOffset = offset
     document.querySelector("#placeholder").innerHTML = "";
     document.querySelector("#placeholder").appendChild(loading);
@@ -51,19 +51,19 @@ function search(offset) {
 
                     foundAmount = response.laureates.length;
 
-                    console.log(response);
-                    console.log(response.laureates);
+                    // console.log(response);
+                    // console.log(response.laureates);
 
                     if (foundAmount == 0) {
                         if (filters[1].length == 1) throwSearchError();
                         else noLaureates = true;
                     }
                     handleResponse(response, LIMIT);
-                    console.log("AMOUNT_DEBUG: " + foundAmount);
+                    // console.log("AMOUNT_DEBUG: " + foundAmount);
                     adjustPageButtons(foundAmount);
                 })
         } else {
-            console.log("FILTER_DEBUG")
+            // console.log("FILTER_DEBUG")
             let emptyResponses = 0;
             let fullResponses = 0;
             if (offset == 0) {
@@ -79,19 +79,19 @@ function search(offset) {
                     .then(response => {
                         if (document.querySelector("#loading-gif")) document.querySelector("#loading-gif").remove();
 
-                        console.log("DEBUG_CATEGORY: " + item)
-                        console.log("DEBUG_CATEGORY: " + categoryAlias[item])
+                        // console.log("DEBUG_CATEGORY: " + item)
+                        // console.log("DEBUG_CATEGORY: " + categoryAlias[item])
                         foundAmount += response.laureates.length;
 
-                        console.log(response);
-                        console.log(response.laureates);
+                        // console.log(response);
+                        // console.log(response.laureates);
                         if (response.laureates.length == Math.ceil(LIMIT / filters[0].length) + 1) fullResponses++;
                         if (response.laureates.length == 0) {
                             emptyResponses++;
                         } else {
                             handleResponse(response, Math.ceil(LIMIT / filters[0].length));
                         }
-                        console.log("AMOUNT_DEBUG: " + foundAmount);
+                        // console.log("AMOUNT_DEBUG: " + foundAmount);
                         if (fullResponses > 0) adjustPageButtons(LIMIT + 1);
                         else adjustPageButtons(foundAmount);
 
@@ -116,18 +116,18 @@ function search(offset) {
 
                     foundAmount = response.nobelPrizes.length;
 
-                    console.log(response);
-                    console.log(response.nobelPrizes);
+                    // console.log(response);
+                    // console.log(response.nobelPrizes);
 
                     if (foundAmount == 0 && (noLaureates || filters[1].length == 1)) {
                         throwSearchError();
                     }
                     handleResponse(response, LIMIT);
-                    console.log("AMOUNT_DEBUG: " + foundAmount);
+                    // console.log("AMOUNT_DEBUG: " + foundAmount);
                     adjustPageButtons(foundAmount);
                 })
         } else {
-            console.log("FILTER_DEBUG")
+            // console.log("FILTER_DEBUG")
             let emptyResponses = 0;
             let fullResponses = 0;
             for (let item of filters[0]) {
@@ -141,19 +141,19 @@ function search(offset) {
                     .then(response => {
                         if (document.querySelector("#loading-gif")) document.querySelector("#loading-gif").remove();
 
-                        console.log("DEBUG_CATEGORY: " + item)
-                        console.log("DEBUG_CATEGORY: " + categoryAlias[item])
+                        // console.log("DEBUG_CATEGORY: " + item)
+                        // console.log("DEBUG_CATEGORY: " + categoryAlias[item])
                         foundAmount += response.nobelPrizes.length;
 
-                        console.log(response);
-                        console.log(response.nobelPrizes);
+                        // console.log(response);
+                        // console.log(response.nobelPrizes);
                         if (response.nobelPrizes.length == Math.ceil(LIMIT / filters[0].length) + 1) fullResponses++;
                         if (response.nobelPrizes.length == 0) {
                             emptyResponses++;
                         } else {
                             handleResponse(response, Math.ceil(LIMIT / filters[0].length));
                         }
-                        console.log("AMOUNT_DEBUG: " + foundAmount);
+                        // console.log("AMOUNT_DEBUG: " + foundAmount);
                         if (fullResponses > 0) adjustPageButtons(LIMIT + 1);
                         else adjustPageButtons(foundAmount);
 
@@ -382,7 +382,7 @@ function prevPage() {
     if (categoryOffset < 0) categoryOffset = 0;
 
     search(globalOffset - LIMIT);
-    console.log("OFFSETS_DEBUG_PREV: " + categoryOffset)
+    // console.log("OFFSETS_DEBUG_PREV: " + categoryOffset)
 }
 
 function nextPage() {
@@ -390,7 +390,7 @@ function nextPage() {
     if (categoryOffset < 0) categoryOffset = 0;
 
     search(globalOffset + LIMIT);
-    console.log("OFFSETS_DEBUG_NEXT: " + categoryOffset)
+    // console.log("OFFSETS_DEBUG_NEXT: " + categoryOffset)
 }
 
 function getFilter() {
@@ -435,6 +435,18 @@ window.onload = () => {
             search(0);
         }
     });
+    if (screen.width <= 1000){
+        let filterButton = document.querySelector("#filter-button");
+        filterButton.innerText = filterButton.innerText.split(" ").pop();
+
+        let bookmarkButtonChange = document.querySelector("#search-bookmark-button");
+        bookmarkButtonChange.innerHTML = ""
+        
+        let bookmarkInsert = document.createElement("img");
+        bookmarkInsert.src = "./imgs/bookmark-5-256.png";
+        
+        bookmarkButtonChange.appendChild(bookmarkInsert);
+    }
 }
 
 
@@ -574,19 +586,24 @@ function showBookmarkContainer(containerId, bookmarkParentDiv, category) {
 function resetBookmarks() {
     localStorage.clear();
 
-    let i = 0
-    while (true) {
-        let imgId = document.getElementById("imgBookmark" + i);
-        if (imgId == null) {
-            break;
-        }
-        imgId.src = "./imgs/bookmark-5-256.png";
-        i++;
+    let images = document.querySelectorAll("img[id^='imgBookmark']");
+    for (let i of images){
+        i.src = "./imgs/bookmark-5-256.png";
     }
 }
 
 
 
 function resetFilter() {
+    let categories = document.querySelectorAll(".divContentDropdown");
 
+    for (let k = 0; k < 2; k++) {
+        labels = categories[k].querySelectorAll("label.checkbox");
+        for (let i = 0; i < labels.length; i++) {
+            if (k == 1 && i == 0) labels[i].querySelector("input").checked = "checked";
+            else labels[i].querySelector("input").checked = ""
+        }
+    }
+    document.querySelector("#minYear").value = 1901;
+    document.querySelector("#maxYear").value = 2023;
 }
