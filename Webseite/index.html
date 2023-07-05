@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nobel's Archive</title>
 
+    <link href="metro-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4/css/metro-all.min.css">
     <script src="./index_script.js"></script>
     <link rel="stylesheet" href="./index_style.css">
@@ -32,64 +33,76 @@
 
             <div id="search-field">
                 <div id="filter">
-                    <button id="filter-button" onclick="myFunction()" class="searchButton">filter &#x2193;</button>
+                    <button id="filter-button" onclick="dropdownMenu()" class="searchButton">filter &#x2193;</button>
 
                 </div>
 
                 <input type="text" id="search-bar" placeholder="eg. Einstein, Obama">
                 <button id="search-button" onclick="search(0)" class="searchButton">Search</button>
-                <button id="debug-button" onclick="debug()">#DEBUG#</button>
+                <button id="search-bookmark-button" onclick="showBookmarks()" class="searchButton">Bookmarks</button>
             </div>
-            <div id="content-dropdown" class="dropdown-content">
+            <div id="dropdownContent" class="dropdown-content">
                 <div class="divContentDropdown">
                     <label class="checkbox">physics
-                        <input type="checkbox" checked="checked">
+                        <input type="checkbox">
                         <span class="checkmark"></span>
                     </label>
 
                     <label class="checkbox">chemistry
-                        <input type="checkbox" checked="checked">
+                        <input type="checkbox">
                         <span class="checkmark"></span>
                     </label>
 
                     <label class="checkbox">physiology or medicine
-                        <input type="checkbox" checked="checked">
+                        <input type="checkbox">
                         <span class="checkmark"></span>
                     </label>
 
                     <label class="checkbox">literature
-                        <input type="checkbox" checked="checked">
+                        <input type="checkbox">
                         <span class="checkmark"></span>
                     </label>
                     <label class="checkbox">peace
-                        <input type="checkbox" checked="checked">
+                        <input type="checkbox">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="checkbox" checked="checked">economic sciences
-                        <input type="checkbox" checked="checked">
+                    <label class="checkbox">economic sciences
+                        <input type="checkbox">
                         <span class="checkmark"></span>
                     </label>
 
                 </div>
                 <div class="divContentDropdown">
-                    <label class="checkbox" checked="checked">person
+                    <label class="checkbox">person
                         <input type="checkbox" checked="checked">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="checkbox" checked="checked">nobel prize
-                        <input type="checkbox" checked="checked">
+                    <label class="checkbox">nobel prize
+                        <input type="checkbox">
                         <span class="checkmark"></span>
                     </label>
-
                 </div>
 
+                <div id="content-year" class="divContentDropdown">
+                    <div>
+                        <label for="minYear">From
+                            <input type="number" id="minYear" class="yearInput" min="1901" max="2023" step="1"
+                                value="1901">
+                        </label>
+                        <label for="maxYear">To
+                            <input type="number" id="maxYear" class="yearInput" min="1901" max="2023" step="1"
+                                value="2023">
+                        </label>
+                    </div>
+                </div>
                 <div class="divContentDropdown">
-                    <!-- https://metroui.org.ua/double-slider.html -->
-                    <input data-role="doubleslider" data-hint="true" data-hint-always="true" data-min="1921" data-max="2023">
+                    <button class="searchButton" onclick="resetFilter()">Reset filter</button>
+                    <button class="searchButton" onclick="resetBookmarks()">Reset bookmarks</button>
                 </div>
 
             </div>
             <div id="placeholder"></div>
+            <!--https://www.iconsdb.com/white-icons/white-bookmark-icons.html-->
             <button id="prev-page-button" class="searchButton pageButton" onclick="prevPage()">Previous Page</button>
             <button id="next-page-button" class="searchButton pageButton" onclick="nextPage()">Next Page</button>
         </div>
